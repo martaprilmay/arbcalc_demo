@@ -1,0 +1,42 @@
+{% extends 'calc/base.html' %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+
+    {% block content %}
+    <br>
+
+    <form action="{% url 'calc:home' %}" method="post">
+      {% csrf_token %}
+      <div class="cntr">
+        <div class="ctr centr padding-top-15">
+          <h3 style="padding-bottom:0px">Fee Calculator</h3>
+        </div>
+      </div>
+      <div class="cntr">
+        <div class="centr padding-15">
+          <div class="right">
+            <hr class="black">
+            {{ form.amount|as_crispy_field }}
+            {{ form.arbs|as_crispy_field }}
+            {{ form.parties|as_crispy_field }}
+            {{ form.proc|as_crispy_field }}
+            {{ form.ea|as_crispy_field }}
+          </div>
+          <div class="middle">
+            <hr class="black">
+          </div>
+          <div class="left">
+            <hr class="black">
+            {{ form.ai|as_crispy_field }}
+          </div>
+        </div>
+      </div>
+      <div class="cntr">
+        <div class="ctr centr padding-btm-15">
+        <input class="bttn" type="submit" name="Calculate" value="Calculate">
+        </div>
+      </div>
+    </form>
+
+<br>
+    {% endblock %}

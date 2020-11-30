@@ -1,0 +1,78 @@
+<div class="calc">
+									<h3 class="calc__title">
+                                        Расчет стоимости арбитражного сбора									</h3>
+									<div class="grid calc__grid">
+										<div class="grid__col_14-sm calc__col calc__col_params">
+											<form class="form calc__form">
+												<div class="input js-input input_focused">
+													<p class="input__label">
+                                                        Введите цену иска, <span class="js-currency" data-usd="USD" data-rur="руб.">руб.</span>													</p>
+													<input class="input__field js-input__field_sum" type="text" name="money" value="500000.00">
+												</div>
+												<div class="input input_select js-input js-input_select js-input-arbitrators input_focused" data-value="1">
+													<p class="input__label">
+                                                        Состав арбитража													</p>
+													<input class="input__field" type="text" name="consist" value="1 арбитр" disabled="">
+													<ul class="input__list">
+														<div class="input__list-wrapper">
+                                                            <li class="input__option input__option_active" data-value="1">1 арбитр</li>
+                                                            <li class="input__option" data-value="3">3 арбитрa</li>
+                                                            <li class="input__option" data-value="5">5 арбитров</li>
+                                                            <li class="input__option" data-value="7">7 арбитров</li>
+                                                            <li class="input__option" data-value="9">9 арбитров</li>
+														</div>
+													</ul>
+												</div>
+												<div class="input input_select js-input js-input_select js-input-casetype input_focused" data-value="internal">
+													<p class="input__label">
+                                                        Вид спора													</p>
+													<input class="input__field" type="text" name="type" value="Арбитраж внутреннего спора" disabled="">
+													<ul class="input__list">
+														<div class="input__list-wrapper">
+                                                            <li class="input__option" data-value="internal">Арбитраж внутреннего спора</li>
+                                                            <li class="input__option" data-value="corporate">Арбитраж корпоративного спора</li>
+                                                            <li class="input__option" data-value="international">Международный коммерческий арбитраж</li>
+														</div>
+													</ul>
+												</div>
+												<div class="radiogroup js-radio-order" data-value="default">
+													<div class="radiogroup__label">
+                                                        Порядок рассмотрения													</div>
+													<div class="radio radio_checked" data-value="default">
+														<input class="radio__true" type="radio" name="order" value="default" checked="">
+														<div class="radio__fake"></div>
+														<p class="radio__label">
+                                                            Стандартный														</p>
+													</div>
+													<div class="radio" data-value="fast">
+														<input class="radio__true" type="radio" name="order" value="fast">
+														<div class="radio__fake"></div>
+														<p class="radio__label">
+                                                            Ускоренный														</p>
+													</div>
+												</div>
+											</form>
+										</div>
+										<div class="grid__col_10-sm calc__col calc__col_result">
+											<div class="calc__result calc__result_top">
+												<div class="calc__tax calc__tax_admin">
+													<p class="calc__label">
+                                                        Административный сбор, <span class="js-currency" data-usd="USD" data-rur="руб.">руб.</span>													</p>
+													<h3 class="calc__money">17,500.00</h3>
+												</div>
+												<div class="calc__tax calc__tax_fee">
+													<p class="calc__label">
+                                                        Гонорарный сбор, <span class="js-currency" data-usd="USD" data-rur="руб.">руб.</span>													</p>
+													<h3 class="calc__money">42,500.00</h3>
+												</div>
+											</div>
+											<div class="calc__result calc__result_bottom">
+												<div class="calc__tax calc__tax_arbitr">
+													<p class="calc__label">
+                                                        Арбитражный сбор, <span class="js-currency" data-usd="USD" data-rur="руб.">руб.</span>													</p>
+													<h1 class="calc__money">60,000.00</h1>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
