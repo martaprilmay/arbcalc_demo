@@ -1,27 +1,27 @@
 from calc.models import Cost, Rate
 
 
-# usd_to_eur = Rate.objects.get(name='USD_EUR').rate
-# eur_to_usd = Rate.objects.get(name='EUR_USD').rate
-# rub_to_usd = Rate.objects.get(name='RUB_USD').rate
-# usd_to_rub = Rate.objects.get(name='USD_RUB').rate
-# usd_to_rmb = Rate.objects.get(name='USD_CNY').rate
-# rmb_to_usd = Rate.objects.get(name='CNY_USD').rate
-# usd_to_hkd = Rate.objects.get(name='USD_HKD').rate
-# hkd_to_usd = Rate.objects.get(name='HKD_USD').rate
-# sgd_to_usd = Rate.objects.get(name='SGD_USD').rate
-# usd_to_sgd = Rate.objects.get(name='USD_SGD').rate
+usd_to_eur = Rate.objects.get(name='USD_EUR').rate
+eur_to_usd = Rate.objects.get(name='EUR_USD').rate
+rub_to_usd = Rate.objects.get(name='RUB_USD').rate
+usd_to_rub = Rate.objects.get(name='USD_RUB').rate
+usd_to_rmb = Rate.objects.get(name='USD_CNY').rate
+rmb_to_usd = Rate.objects.get(name='CNY_USD').rate
+usd_to_hkd = Rate.objects.get(name='USD_HKD').rate
+hkd_to_usd = Rate.objects.get(name='HKD_USD').rate
+sgd_to_usd = Rate.objects.get(name='SGD_USD').rate
+usd_to_sgd = Rate.objects.get(name='USD_SGD').rate
 
-usd_to_eur = 1
-eur_to_usd = 1
-rub_to_usd = 1
-usd_to_rub = 1
-usd_to_rmb = 1
-rmb_to_usd = 1
-usd_to_hkd = 1
-hkd_to_usd = 1
-sgd_to_usd = 1
-usd_to_sgd = 1
+# usd_to_eur = 1
+# eur_to_usd = 1
+# rub_to_usd = 1
+# usd_to_rub = 1
+# usd_to_rmb = 1
+# rmb_to_usd = 1
+# usd_to_hkd = 1
+# hkd_to_usd = 1
+# sgd_to_usd = 1
+# usd_to_sgd = 1
 
 
 def rac_at_rima(amount, arbs, proc):
