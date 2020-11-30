@@ -25,8 +25,10 @@ def home(request):
             amount = req.amount
             arbs = req.arbs
             proc = req.proc
+            parties = req.parties
+            measures = req.ea
             ais = req.ai.all()
-            ai_chooser2(req, ais, amount, arbs, proc)
+            ai_chooser2(req, ais, amount, arbs, proc, parties, measures)
             return HttpResponseRedirect(reverse('calc:result'))
             # return HttpResponseRedirect(reverse('calc:result', args=(req.pk,)))
         else:

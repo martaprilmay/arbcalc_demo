@@ -24,7 +24,7 @@ usd_to_sgd = Rate.objects.get(name='USD_SGD').rate
 # usd_to_sgd = 1
 
 
-def rac_at_rima(amount, arbs, proc):
+def rac_at_rima(amount, arbs, proc, measures):
 
     reg_fee = 500.0
     comment1 = 'The Registration fee is included in the Arbitration fee.'
@@ -94,6 +94,12 @@ def rac_at_rima(amount, arbs, proc):
 
     arb_fee = admin_fee + arbs_fee
 
+    if measures == 'Yes':
+        comment3 = (
+            'The RIMA Rules set no additional costs for emergency measures pro'
+            'ceedings'
+        )
+
     admin_fee = round(admin_fee, 2)
     arbs_fee = round(arbs_fee, 2)
     arb_fee = round(arb_fee, 2)
@@ -104,13 +110,14 @@ def rac_at_rima(amount, arbs, proc):
         'arbs_fee': arbs_fee,
         'arb_fee': arb_fee,
         'comment0': comment0,
-        'comment1': comment1
+        'comment1': comment1,
+        'comment3': comment3,
     }
 
     return result
 
 
-def scc(amount, arbs, proc):
+def scc(amount, arbs, proc, parties, measures):
 
     amount *= usd_to_eur
 
@@ -273,6 +280,8 @@ def scc(amount, arbs, proc):
             f"e in this case is USD {max_arbs_fee}."
         )
     else:
+        if comment0:
+            comment0 += '\n'
         comment0 += (
             'If the amount in dispute exceeds EUR 5,000,000 the SCC Board de'
             'termines the Arbitrators fee.'
@@ -291,7 +300,7 @@ def scc(amount, arbs, proc):
     return result
 
 
-def icc(amount, arbs, proc):
+def icc(amount, arbs, proc, parties, measures):
 
     reg_fee = 5000.00
     comment1 = "The Registration fee is included in the Arbitration fee."
@@ -496,7 +505,7 @@ def icc(amount, arbs, proc):
     return result
 
 
-def hkiac(amount, arbs, proc):
+def hkiac(amount, arbs, proc, parties, measures):
 
     amount *= usd_to_hkd
     reg_fee = hkd_to_usd * 8000.00
@@ -576,7 +585,7 @@ def hkiac(amount, arbs, proc):
     return result
 
 
-def siac(amount, arbs, proc):
+def siac(amount, arbs, proc, parties, measures):
 
     reg_fee = 2000.00
     comment1 = (
@@ -652,7 +661,7 @@ def siac(amount, arbs, proc):
     return result
 
 
-def viac(amount, arbs, proc):
+def viac(amount, arbs, proc, parties, measures):
 
     amount *= usd_to_eur
     comment1 = 'Registration fee is NOT included in the Arbitration fee.'
@@ -755,7 +764,7 @@ def viac(amount, arbs, proc):
     return result
 
 
-def dis(amount, arbs, proc):
+def dis(amount, arbs, proc, parties, measures):
 
     amount *= usd_to_eur
     reg_fee = 0.0
@@ -856,7 +865,7 @@ def dis(amount, arbs, proc):
     return result
 
 
-def aiac(amount, arbs, proc):
+def aiac(amount, arbs, proc, parties, measures):
     reg_fee = 2000.00
     comment1 = 'The Registration fee is NOT included in the Arbitration fee.'
 
@@ -949,11 +958,11 @@ def aiac(amount, arbs, proc):
     return result
 
 
-def kcab(amount, arbs, proc):
+def kcab(amount, arbs, proc, parties, measures):
     pass
 
 
-def cietac(amount, arbs, proc):
+def cietac(amount, arbs, proc, parties, measures):
 
     amount_c = amount * usd_to_rmb
 
@@ -1089,7 +1098,7 @@ def cietac(amount, arbs, proc):
     return result
 
 
-def icac(amount, arbs, proc):
+def icac(amount, arbs, proc, parties, measures):
 
     reg_fee = 1000.0
     comment1 = "The Registration fee is NOT included in the Arbitration fee."
@@ -1156,7 +1165,7 @@ def icac(amount, arbs, proc):
     return result
 
 
-def rspp(amount, arbs, proc):
+def rspp(amount, arbs, proc, parties, measures):
 
     amount *= usd_to_rub
 
@@ -1266,21 +1275,11 @@ def rspp(amount, arbs, proc):
     return result
 
 
-def ai_chooser(ais, amount, arbs, proc):
-    res = dict()
-    for ai in ais:
-        if ai.id == 1:
-            res["rac_at_rima"] = rac_at_rima(amount, arbs, proc)
-        elif ai.id == 6:
-            res['rspp'] = rspp(amount, arbs, proc)
-    return res
-
-
-def ai_chooser2(req, ais, amount, arbs, proc):
+def ai_chooser2(req, ais, amount, arbs, proc, parties, measures):
     result = []
     for ai in ais:
         if ai.id == 1:
-            res = rac_at_rima(amount, arbs, proc)
+            res = rac_at_rima(amount, arbs, proc, parties, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
@@ -1292,7 +1291,7 @@ def ai_chooser2(req, ais, amount, arbs, proc):
             obj.save()
             result.append(obj)
         if ai.id == 2:
-            res = hkiac(amount, arbs, proc)
+            res = hkiac(amount, arbs, proc, parties, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
@@ -1304,7 +1303,7 @@ def ai_chooser2(req, ais, amount, arbs, proc):
             obj.save()
             result.append(obj)
         if ai.id == 3:
-            res = siac(amount, arbs, proc)
+            res = siac(amount, arbs, proc, parties, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
@@ -1316,7 +1315,7 @@ def ai_chooser2(req, ais, amount, arbs, proc):
             obj.save()
             result.append(obj)
         elif ai.id == 4:
-            res = scc(amount, arbs, proc)
+            res = scc(amount, arbs, proc, parties, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
@@ -1329,7 +1328,7 @@ def ai_chooser2(req, ais, amount, arbs, proc):
             obj.save()
             result.append(obj)
         elif ai.id == 5:
-            res = icc(amount, arbs, proc)
+            res = icc(amount, arbs, proc, parties, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
@@ -1342,7 +1341,7 @@ def ai_chooser2(req, ais, amount, arbs, proc):
             obj.save()
             result.append(obj)
         elif ai.id == 6:
-            res = rspp(amount, arbs, proc)
+            res = rspp(amount, arbs, proc, parties, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
@@ -1355,7 +1354,7 @@ def ai_chooser2(req, ais, amount, arbs, proc):
             obj.save()
             result.append(obj)
         elif ai.id == 7:
-            res = icac(amount, arbs, proc)
+            res = icac(amount, arbs, proc, parties, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
@@ -1368,7 +1367,7 @@ def ai_chooser2(req, ais, amount, arbs, proc):
             obj.save()
             result.append(obj)
         elif ai.id == 8:
-            res = dis(amount, arbs, proc)
+            res = dis(amount, arbs, proc, parties, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
@@ -1378,7 +1377,7 @@ def ai_chooser2(req, ais, amount, arbs, proc):
             obj.save()
             result.append(obj)
         elif ai.id == 9:
-            res = cietac(amount, arbs, proc)
+            res = cietac(amount, arbs, proc, parties, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
@@ -1389,7 +1388,7 @@ def ai_chooser2(req, ais, amount, arbs, proc):
             obj.save()
             result.append(obj)
         elif ai.id == 10:
-            res = viac(amount, arbs, proc)
+            res = viac(amount, arbs, proc, parties, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
@@ -1400,7 +1399,7 @@ def ai_chooser2(req, ais, amount, arbs, proc):
             obj.save()
             result.append(obj)
         elif ai.id == 11:
-            res = aiac(amount, arbs, proc)
+            res = aiac(amount, arbs, proc, parties, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']

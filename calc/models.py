@@ -46,10 +46,16 @@ class Cost(models.Model):
     arb_fee = models.FloatField(null=True, blank=True)
     arbs_fee = models.FloatField(null=True, blank=True)
     admin_fee = models.FloatField(null=True, blank=True)
+    em_fee = models.FloatField(null=True, blank=True)
+
+    min_arbs_fee = models.FloatField(null=True, blank=True)
+    med_arbs_fee = models.FloatField(null=True, blank=True)
+    max_arbs_fee = models.FloatField(null=True, blank=True)
 
     comment0 = models.TextField(null=True, blank=True)
     comment1 = models.TextField(null=True, blank=True)
     comment2 = models.TextField(null=True, blank=True)
+    comment3 = models.TextField(null=True, blank=True)
 
 
 class Rate(models.Model):
