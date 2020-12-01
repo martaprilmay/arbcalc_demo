@@ -1,18 +1,11 @@
 from calc.models import Cost, Rate
 
-# usd_to_eur = 1
-# eur_to_usd = 1
-# rub_to_usd = 1
-# usd_to_rub = 1
-# usd_to_rmb = 1
-# rmb_to_usd = 1
-# usd_to_hkd = 1
-# hkd_to_usd = 1
-# sgd_to_usd = 1
-# usd_to_sgd = 1
-
 
 def rac_at_rima(amount, arbs, proc, measures):
+    '''
+    Calculates fees for international arbitration in the Russian Arbitration
+    Center at the Russian Institute of Modern Arbitration.
+    '''
 
     reg_fee = 500.0
     comment1 = 'The Registration fee is included in the Arbitration fee.'
@@ -21,6 +14,7 @@ def rac_at_rima(amount, arbs, proc, measures):
     arbs_fee = 0
     comment0 = ''
 
+    # limitations on expedited procedure
     if proc == 'Expedited' and amount >= 500000:
         comment0 += (
             'Expedited arbitration only allowed under US$ 500 000 under RIMA R'
@@ -36,6 +30,8 @@ def rac_at_rima(amount, arbs, proc, measures):
         )
         arbs = 1
 
+    # calculating admin and arbs fee (sole arb before 500 000, then 3 arbs)
+    # standard procedure
     if amount < 10000:
         admin_fee = 1000.00
         arbs_fee = 2000.00
@@ -67,6 +63,7 @@ def rac_at_rima(amount, arbs, proc, measures):
         admin_fee = 14600.00 + (amount - 10000000) * 0.0001
         arbs_fee = 51600.00 + (amount - 10000000) * 0.0015
 
+    # adjustments in expedited proc
     if proc == 'Expedited':
         if amount < 500000:
             admin_fee *= 0.5
@@ -82,16 +79,20 @@ def rac_at_rima(amount, arbs, proc, measures):
 
     arb_fee = admin_fee + arbs_fee
 
+    # emergency peasures
+    comment3 = ''
     if measures == 'Yes':
-        comment3 = (
+        comment3 += (
             'The RIMA Rules set no additional costs for emergency measures pro'
             'ceedings'
         )
 
+    # formatting results
     admin_fee = round(admin_fee, 2)
     arbs_fee = round(arbs_fee, 2)
     arb_fee = round(arb_fee, 2)
 
+    # saving results in a dict
     result = {
         'reg_fee': reg_fee,
         'admin_fee': admin_fee,
@@ -105,16 +106,23 @@ def rac_at_rima(amount, arbs, proc, measures):
     return result
 
 
-def scc(amount, arbs, proc, parties, measures):
+def scc(amount, arbs, proc, measures):
+    '''
+    Calculates fees for international arbitration in the ICC International
+    Court of Arbitration.
+    '''
 
+    # getting rates from database
     usd_to_eur = Rate.objects.get(name='USD_EUR').rate
     eur_to_usd = Rate.objects.get(name='EUR_USD').rate
 
+    # converting amout to EUR
     amount *= usd_to_eur
 
     comment1 = 'The Registration fee is included in the Arbitration fee.'
     comment0 = ''
 
+    # calculating arb and admin fee (solo arbitrator, standard proc)
     if proc == 'Standard':
 
         reg_fee = eur_to_usd * 3000.00
@@ -187,6 +195,7 @@ def scc(amount, arbs, proc, parties, measures):
             max_arbs_fee *= 2.2
             med_arbs_fee *= 2.2
 
+    # calculating arb and admin fee (solo arbitrator, exp proc)
     if proc == 'Expedited':
 
         reg_fee = eur_to_usd * 2500.00
@@ -252,6 +261,7 @@ def scc(amount, arbs, proc, parties, measures):
     if measures == 'Yes':
         ea_fee = 20000.0
 
+    # converting results to USD
     admin_fee *= eur_to_usd
     min_arbs_fee *= eur_to_usd
     max_arbs_fee *= eur_to_usd
@@ -303,11 +313,16 @@ def scc(amount, arbs, proc, parties, measures):
 
 
 def icc(amount, arbs, proc, measures):
+    '''
+    Calculates fees for international arbitration in the ICC International
+    Court of Arbitration.
+    '''
 
     reg_fee = 5000.00
     comment1 = "The Registration fee is included in the Arbitration fee."
     comment0 = ''
 
+    # calculating arb and admin fee (solo arbitrator, standard proc)
     if proc == 'Standard':
 
         if amount <= 50000:
@@ -381,6 +396,7 @@ def icc(amount, arbs, proc, measures):
             max_arbs_fee = 583300.00 + (amount - 500000000) * 0.0004
             med_arbs_fee = (min_arbs_fee + max_arbs_fee) / 2
 
+    # calculating arb and admin fee (solo arbitrator, exp proc)
     elif proc == 'Expedited':
 
         if arbs == 3:
@@ -462,6 +478,7 @@ def icc(amount, arbs, proc, measures):
             max_arbs_fee = 466640.00 + (amount - 500000000) * 0.00032
             med_arbs_fee = (min_arbs_fee + max_arbs_fee) / 2
 
+    # limitations on expedited procedure
     if amount < 3000000 and proc == 'Standard':
         comment0 = (
             'NB! The Expedited Procedure of the ICC Rules apply automatica'
@@ -474,18 +491,11 @@ def icc(amount, arbs, proc, measures):
             'ment.'
         )
 
+    # arbs fee for a panel of three
     if arbs == 3:
         min_arbs_fee *= 3
         max_arbs_fee *= 3
         med_arbs_fee *= 3
-
-    med_arb_fee = admin_fee + med_arbs_fee
-
-    min_arbs_fee = round(min_arbs_fee, 2)
-    max_arbs_fee = round(max_arbs_fee, 2)
-    med_arbs_fee = round(med_arbs_fee, 2)
-    admin_fee = round(admin_fee, 2)
-    med_arb_fee = round(med_arb_fee, 2)
 
     comment2 = (
         f"Arbitrators fee is determined by the ICC Court.\n The estimation abo"
@@ -494,11 +504,27 @@ def icc(amount, arbs, proc, measures):
         f"e is {max_arbs_fee}.\n"
     )
 
+    # emergency measures
+    ea_fee = 0
+    if measures == 'Yes':
+        ea_fee = 40000.0
+
+    med_arb_fee = admin_fee + med_arbs_fee + ea_fee
+
+    # formatting results
+    min_arbs_fee = round(min_arbs_fee, 2)
+    max_arbs_fee = round(max_arbs_fee, 2)
+    med_arbs_fee = round(med_arbs_fee, 2)
+    admin_fee = round(admin_fee, 2)
+    med_arb_fee = round(med_arb_fee, 2)
+
+    # adding results to dict
     result = {
         'reg_fee': reg_fee,
         'admin_fee': admin_fee,
         'arbs_fee': med_arbs_fee,
         'arb_fee': med_arb_fee,
+        'ea_fee': ea_fee,
         'comment0': comment0,
         'comment1': comment1,
         'comment2': comment2
@@ -508,15 +534,24 @@ def icc(amount, arbs, proc, measures):
 
 
 def hkiac(amount, arbs, proc, measures):
+    '''
+    Calculates fees for international arbitration in the the Hong Kong
+    International Arbitration Centre
+    '''
 
+    # getting rates from database
     usd_to_hkd = Rate.objects.get(name='USD_HKD').rate
     hkd_to_usd = Rate.objects.get(name='HKD_USD').rate
 
+    # converting amount to HKD
     amount *= usd_to_hkd
+
     reg_fee = hkd_to_usd * 8000.00
     comment1 = 'The Registration fee is NOT included in the Arbitration fee'
+
     comment0 = ''
 
+    # limitations on expedited procedure
     if proc == 'Expedited' and amount > 25000000:
         comment0 += (
             'Expedited arbitration is only allowed under HKD 25 000 000 under '
@@ -524,6 +559,7 @@ def hkiac(amount, arbs, proc, measures):
         )
         proc == 'Standard'
 
+    # calculating admin and arbs fee (sole arbitrator)
     if amount <= 400000:
         admin_fee = 19800.00
         arbs_fee = 0.11 * amount
@@ -566,35 +602,58 @@ def hkiac(amount, arbs, proc, measures):
         if arbs_fee > 12574000:
             arbs_fee = 12574000.00
 
+    # arbs_fee for a panel of three arbs
     if arbs == 3:
         arbs_fee *= 3
 
+    # emergency measures
+    ea_fee = 0
+    comment2 = ''
+    if measures == 'Yes':
+        ea_fee = 200000 * hkd_to_usd
+        in_USD = 250000 * hkd_to_usd
+        comment2 += (
+            f'Emergency arbitrator proceedings also require an application dep'
+            f'osit of {in_USD} USD.'
+        )
+    # converting results
     arbs_fee *= hkd_to_usd
     admin_fee *= hkd_to_usd
-    arb_fee = arbs_fee + admin_fee
+    arb_fee = arbs_fee + admin_fee + ea_fee
 
+    # formatting results
     arbs_fee = round(arbs_fee, 2)
     admin_fee = round(admin_fee, 2)
     arb_fee = round(arb_fee, 2)
     reg_fee = round(reg_fee, 2)
+    ea_fee = round(ea_fee, 2)
 
+    # adding results to dict
     result = {
         'reg_fee': reg_fee,
         'arb_fee': arb_fee,
         'arbs_fee': arbs_fee,
         'admin_fee': admin_fee,
+        'ea_fee': ea_fee,
         'comment0': comment0,
-        'comment1': comment1
+        'comment1': comment1,
+        'comment2': comment2,
     }
 
     return result
 
 
 def siac(amount, arbs, proc, measures):
+    '''
+    Calculates fees for international arbitration in the the Singapore
+    International Arbitral Centre.
+    '''
 
+    # getting rates from database
     sgd_to_usd = Rate.objects.get(name='SGD_USD').rate
     usd_to_sgd = Rate.objects.get(name='USD_SGD').rate
 
+    # converting amount
     amount *= usd_to_sgd
 
     reg_fee = 2000.00 * sgd_to_usd
@@ -604,6 +663,7 @@ def siac(amount, arbs, proc, measures):
     )
     comment0 = ''
 
+    # limitations on expedited proc in SIAC
     if proc == 'Expedited' and amount > 6000000:
         comment0 = (
             'Expedited arbitration is only allowed under SGD 6 000 000 under '
@@ -611,6 +671,7 @@ def siac(amount, arbs, proc, measures):
         )
         proc == 'Standard'
 
+    # calculating admin and arbs fee (solo arbitrator)
     if amount <= 50000:
         admin_fee = 3800.00
         arbs_fee = 6250.00
@@ -650,22 +711,35 @@ def siac(amount, arbs, proc, measures):
         if arbs_fee > 2000000:
             arbs_fee = 2000000.00
 
+    # arbs_fee for panel of three
     if arbs == 3:
         arbs_fee *= 3
 
+    # emergency measures
+    ea_fee = 0
+    if measures == 'Yes':
+        ea_fee = 30000.0 * sgd_to_usd
+
+    # converting results
     arbs_fee *= sgd_to_usd
     admin_fee *= sgd_to_usd
-    arb_fee = arbs_fee + admin_fee
 
+    arb_fee = arbs_fee + admin_fee + ea_fee
+
+    # formatting results
     arbs_fee = round(arbs_fee, 2)
     admin_fee = round(admin_fee, 2)
     arb_fee = round(arb_fee, 2)
+    reg_fee = round(reg_fee, 2)
+    ea_fee = round(ea_fee, 2)
 
+    # adding results to dict
     result = {
         'reg_fee': reg_fee,
         'arb_fee': arb_fee,
         'arbs_fee': arbs_fee,
         'admin_fee': admin_fee,
+        'ea_fee': ea_fee,
         'comment1': comment1,
         'comment0': comment0
     }
@@ -674,13 +748,20 @@ def siac(amount, arbs, proc, measures):
 
 
 def viac(amount, arbs, proc, measures):
+    '''
+    Calculates fees for international arbitration in the the Vienna
+    International Arbitral Centre.
+    '''
 
+    # getting rates from database
     usd_to_eur = Rate.objects.get(name='USD_EUR').rate
     eur_to_usd = Rate.objects.get(name='EUR_USD').rate
 
+    # converting amount
     amount *= usd_to_eur
     comment1 = 'Registration fee is NOT included in the Arbitration fee.'
 
+    # calculating reg admin and arbs fee in relation to amount (sole arb)
     if amount <= 25000:
         reg_fee = 500.00
         admin_fee = 500.00
@@ -744,53 +825,74 @@ def viac(amount, arbs, proc, measures):
             admin_fee = 75000.00
         arbs_fee = 174500.00 + (amount - 100000000) * 0.0001
 
+    # calculating arbs_fee for a panel of three
     if arbs == 3:
         arbs_fee *= 2.5
 
     arb_fee = arbs_fee + admin_fee
 
+    # discretion on arbs_fee
     max_arbs_fee = 1.4 * arbs_fee
-
-    arbs_fee *= eur_to_usd
-    admin_fee *= eur_to_usd
-    arb_fee *= eur_to_usd
-    max_arbs_fee *= eur_to_usd
-
-    arbs_fee = round(arbs_fee, 2)
-    admin_fee = round(admin_fee, 2)
-    arb_fee = round(arb_fee, 2)
-    max_arbs_fee = round(max_arbs_fee, 2)
-
     comment2 = (
         f'The Secretary General of VIAC may increase the arbitrators’ fee by a'
         f' maximum total of 40 percent. In this case Arbitrators fee may reach'
         f' USD {max_arbs_fee}.'
     )
 
+    # no emergency measures in VIAC
+    comment0 = ''
+    if measures == 'Yes':
+        comment0 = (
+            'The VIAC Rules have no provisions in relation to emergency measur'
+            'es proceeding before constitution of the arbitral tribunal.'
+        )
+
+    # converting results
+    arbs_fee *= eur_to_usd
+    admin_fee *= eur_to_usd
+    arb_fee *= eur_to_usd
+    max_arbs_fee *= eur_to_usd
+
+    # formatting results
+    arbs_fee = round(arbs_fee, 2)
+    admin_fee = round(admin_fee, 2)
+    arb_fee = round(arb_fee, 2)
+    max_arbs_fee = round(max_arbs_fee, 2)
+
+    # adding results to dict
     result = {
         'reg_fee': reg_fee,
         'arb_fee': arb_fee,
         'arbs_fee': arbs_fee,
         'admin_fee': admin_fee,
+        'comment0': comment0,
         'comment1': comment1,
-        'comment2': comment2
+        'comment2': comment2,
     }
 
     return result
 
 
 def dis(amount, arbs, proc, parties, measures):
+    '''
+    Calculates fees for international arbitration in the the German Arbitration
+    Institute (DIS)
+    '''
 
+    # get rates from database
     usd_to_eur = Rate.objects.get(name='USD_EUR').rate
     eur_to_usd = Rate.objects.get(name='EUR_USD').rate
 
+    # convert amount
     amount *= usd_to_eur
+
     reg_fee = 0.0
     comment1 = (
         'No registration fee is set by DIS Rules. Within a time limit set by '
         'the DIS, the claimant shall pay to the DIS the administrative fee.'
     )
 
+    # calculating admin_fee and fee per arbitrator
     if amount <= 5000:
         admin_fee = amount * 0.2
         if admin_fee < 750:
@@ -856,12 +958,14 @@ def dis(amount, arbs, proc, parties, measures):
         arb2 = arb3 = 454450.00
         arb1 = 1.3 * arb2
 
+    # calculating arbs_fee
     if arbs == 1:
         arbs_fee = arb1
 
     if arbs == 3:
         arbs_fee = arb1 + arb2 + arb3
 
+    # ajustments for multiple parties
     if parties == 3:
         arbs_fee *= 1.1
         admin_fee *= 1.1
@@ -870,21 +974,34 @@ def dis(amount, arbs, proc, parties, measures):
         arbs_fee *= 1.2
         admin_fee *= 1.2
 
+    # no emergency measures in dis
+    comment0 = ''
+    if measures == 'Yes':
+        comment0 = (
+            'The DIS Rules have no provisions in relation to emergency measure'
+            's proceeding before constitution of the arbitral tribunal.'
+        )
+
+    # calculating arb_fee
     arb_fee = admin_fee + arbs_fee
 
+    # converting results to USD
     arbs_fee *= eur_to_usd
     admin_fee *= eur_to_usd
     arb_fee *= eur_to_usd
 
+    # formatting results
     admin_fee = round(admin_fee, 2)
     arbs_fee = round(arbs_fee, 2)
     arb_fee = round(arb_fee, 2)
 
+    # adding results to dict
     result = {
         'reg_fee': reg_fee,
         'admin_fee': admin_fee,
         'arbs_fee': arbs_fee,
         'arb_fee': arb_fee,
+        'comment0': comment0,
         'comment1': comment1
     }
 
@@ -892,9 +1009,14 @@ def dis(amount, arbs, proc, parties, measures):
 
 
 def aiac(amount, arbs, proc, measures):
+    '''
+    Calculates fees for international arbitration in the the Asian
+    International Arbitration Centre.
+    '''
     reg_fee = 2000.00
     comment1 = 'The Registration fee is NOT included in the Arbitration fee.'
 
+    # calculating arbs_fee (solo arbitrator, expedited proc)
     if proc == 'Expedited':
         if amount <= 50000:
             arbs_fee = 3500.00
@@ -919,11 +1041,14 @@ def aiac(amount, arbs, proc, measures):
         if amount > 100000000:
             arbs_fee = 124100.00
 
+        # calculating arbs_fee (panel of three, expedited proc)
         if arbs == 3:
             arbs_fee *= 3
 
+        # calculating admin_fee (expedited proc)
         admin_fee = 0.2 * arbs_fee
 
+    # calculating arbs_fee and admin_fee (solo arbitrator, standard proc)
     if proc == 'Standard':
         if amount <= 50000:
             admin_fee = 2050.00
@@ -964,19 +1089,29 @@ def aiac(amount, arbs, proc, measures):
             if arbs_fee > 2000000:
                 arbs_fee = 2000000.00
 
+        # calculating arbs_fee (panel of three, standard proc)
         if arbs == 3:
             arbs_fee *= 3
 
+    # fee for measures
+    ea_fee = 0
+    if measures == 'Yes':
+        ea_fee = 2120.0
+
+    # calculating arb_fee
     arb_fee = arbs_fee + admin_fee
 
+    # formatting results
     arbs_fee = round(arbs_fee, 2)
     admin_fee = round(admin_fee, 2)
     arb_fee = round(arb_fee, 2)
 
+    # adding results to dict
     result = {
         'reg_fee': reg_fee,
         'arb_fee': arb_fee,
         'arbs_fee': arbs_fee,
+        'ea_fee': ea_fee,
         'admin_fee': admin_fee,
         'comment1': comment1
     }
@@ -1006,8 +1141,8 @@ def kcab(amount, arbs, proc, measures):
     if proc == 'Standard' and amount < 500000000:
         in_usd = 500000000 * krw_to_usd
         comment0 += (
-            f'If the amount in dispute is less then KRW 500 000 000 ({in_usd} '
-            f'USD) rules of expedited procedure shall apply.'
+            f'If the amount in dispute is less then {in_usd} '
+            f'USD rules of expedited procedure shall apply.'
         )
 
     # calculating admin_fee and arbs_fee
@@ -1490,8 +1625,9 @@ def rspp(amount, arbs, proc, measures):
     )
 
     # No emergency proceedings in RSPP
+    comment0 = ''
     if measures == 'Yes':
-        comment0 = (
+        comment0 += (
             'The RSPP have no provisions in relation to emergency measures pro'
             'ceeding before constitution of the arbitral tribunal.'
         )
@@ -1528,31 +1664,37 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.save()
             result.append(obj)
         if ai.id == 2:
-            res = hkiac(amount, arbs, proc, parties, measures)
+            res = hkiac(amount, arbs, proc, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
             obj.arbs_fee = res['arbs_fee']
             obj.admin_fee = res['admin_fee']
+            if res['ea_fee']:
+                obj.comment2 = res['ea_fee']
             obj.comment1 = res['comment1']
             if 'comment0' in res:
                 obj.comment0 = res['comment0']
+            if res['comment2']:
+                obj.comment2 = res['comment2']
             obj.save()
             result.append(obj)
         if ai.id == 3:
-            res = siac(amount, arbs, proc, parties, measures)
+            res = siac(amount, arbs, proc, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
             obj.arbs_fee = res['arbs_fee']
             obj.admin_fee = res['admin_fee']
+            if res['ea_fee']:
+                obj.ea_fee = res['ea_fee']
             obj.comment1 = res['comment1']
             if 'comment0' in res:
                 obj.comment0 = res['comment0']
             obj.save()
             result.append(obj)
         elif ai.id == 4:
-            res = scc(amount, arbs, proc, parties, measures)
+            res = scc(amount, arbs, proc, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
@@ -1567,12 +1709,14 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.save()
             result.append(obj)
         elif ai.id == 5:
-            res = icc(amount, arbs, proc, parties, measures)
+            res = icc(amount, arbs, proc, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
             obj.arbs_fee = res['arbs_fee']
             obj.admin_fee = res['admin_fee']
+            if res['ea_fee']:
+                obj.comment2 = res['ea_fee']
             obj.comment1 = res['comment1']
             obj.comment2 = res['comment2']
             if 'comment0' in res:
@@ -1612,11 +1756,13 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.arb_fee = res['arb_fee']
             obj.arbs_fee = res['arbs_fee']
             obj.admin_fee = res['admin_fee']
+            if res['comment0']:
+                obj.comment0 = res['comment0']
             obj.comment1 = res['comment1']
             obj.save()
             result.append(obj)
         elif ai.id == 9:
-            res = cietac(amount, arbs, proc, parties, measures)
+            res = cietac(amount, arbs, proc, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
@@ -1629,23 +1775,27 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.save()
             result.append(obj)
         elif ai.id == 10:
-            res = viac(amount, arbs, proc, parties, measures)
+            res = viac(amount, arbs, proc, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
             obj.arbs_fee = res['arbs_fee']
             obj.admin_fee = res['admin_fee']
+            if res['comment0']:
+                obj.comment0 = res['comment0']
             obj.comment1 = res['comment1']
             obj.comment2 = res['comment2']
             obj.save()
             result.append(obj)
         elif ai.id == 11:
-            res = aiac(amount, arbs, proc, parties, measures)
+            res = aiac(amount, arbs, proc, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
             obj.arbs_fee = res['arbs_fee']
             obj.admin_fee = res['admin_fee']
+            if res['ea_fee']:
+                obj.ea_fee = res['ea_fee']
             obj.comment1 = res['comment1']
             obj.save()
             result.append(obj)
