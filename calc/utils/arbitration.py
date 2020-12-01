@@ -302,7 +302,7 @@ def scc(amount, arbs, proc, parties, measures):
     return result
 
 
-def icc(amount, arbs, proc, parties, measures):
+def icc(amount, arbs, proc, measures):
 
     reg_fee = 5000.00
     comment1 = "The Registration fee is included in the Arbitration fee."
@@ -507,7 +507,7 @@ def icc(amount, arbs, proc, parties, measures):
     return result
 
 
-def hkiac(amount, arbs, proc, parties, measures):
+def hkiac(amount, arbs, proc, measures):
 
     usd_to_hkd = Rate.objects.get(name='USD_HKD').rate
     hkd_to_usd = Rate.objects.get(name='HKD_USD').rate
@@ -590,7 +590,7 @@ def hkiac(amount, arbs, proc, parties, measures):
     return result
 
 
-def siac(amount, arbs, proc, parties, measures):
+def siac(amount, arbs, proc, measures):
 
     sgd_to_usd = Rate.objects.get(name='SGD_USD').rate
     usd_to_sgd = Rate.objects.get(name='USD_SGD').rate
@@ -673,7 +673,7 @@ def siac(amount, arbs, proc, parties, measures):
     return result
 
 
-def viac(amount, arbs, proc, parties, measures):
+def viac(amount, arbs, proc, measures):
 
     usd_to_eur = Rate.objects.get(name='USD_EUR').rate
     eur_to_usd = Rate.objects.get(name='EUR_USD').rate
@@ -891,7 +891,7 @@ def dis(amount, arbs, proc, parties, measures):
     return result
 
 
-def aiac(amount, arbs, proc, parties, measures):
+def aiac(amount, arbs, proc, measures):
     reg_fee = 2000.00
     comment1 = 'The Registration fee is NOT included in the Arbitration fee.'
 
@@ -984,7 +984,7 @@ def aiac(amount, arbs, proc, parties, measures):
     return result
 
 
-def kcab(amount, arbs, proc, parties, measures):
+def kcab(amount, arbs, proc, measures):
     '''
     Calculates fees for international arbitration in the International
     Commercial Arbitration Court at the Chamber of Commerce and Industry
@@ -1002,12 +1002,12 @@ def kcab(amount, arbs, proc, parties, measures):
     comment1 = 'The Registration fee is NOT included in the Arbitration fee.'
 
     # mandatory expedited procedure
-    commnent0 = ''
-    if proc == 'Standard' and amount > 500000000:
+    comment0 = ''
+    if proc == 'Standard' and amount < 500000000:
         in_usd = 500000000 * krw_to_usd
         comment0 += (
-            f'If the amount in dispute is less then KRW 500000000 ({in_usd} US'
-            f'D) rules of Expedited procedure shall apply.'
+            f'If the amount in dispute is less then KRW 500 000 000 ({in_usd} '
+            f'USD) rules of expedited procedure shall apply.'
         )
 
     # calculating admin_fee and arbs_fee
@@ -1070,7 +1070,9 @@ def kcab(amount, arbs, proc, parties, measures):
 
     # !!! not clear from the rules
     if arbs == 3:
-        arbs_fee *= 3
+        min_arbs_fee *= 3
+        max_arbs_fee *= 3
+        med_arbs_fee *= 3
 
     # calculating emergency measures
     ea_fee = 0
@@ -1087,7 +1089,6 @@ def kcab(amount, arbs, proc, parties, measures):
     arb_fee = med_arbs_fee + admin_fee + ea_fee
 
     # formatting results
-    arbs_fee = round(arbs_fee, 2)
     min_arbs_fee = round(min_arbs_fee, 2)
     med_arbs_fee = round(med_arbs_fee, 2)
     max_arbs_fee = round(max_arbs_fee, 2)
@@ -1106,7 +1107,7 @@ def kcab(amount, arbs, proc, parties, measures):
     result = {
         'reg_fee': reg_fee,
         'arb_fee': arb_fee,
-        'arbs_fee': arbs_fee,
+        'arbs_fee': med_arbs_fee,
         'admin_fee': admin_fee,
         'ea_fee': ea_fee,
         'comment0': comment0,
@@ -1117,7 +1118,7 @@ def kcab(amount, arbs, proc, parties, measures):
     return result
 
 
-def cietac(amount, arbs, proc, parties, measures):
+def cietac(amount, arbs, proc, measures):
 
     # chinese branch
 
