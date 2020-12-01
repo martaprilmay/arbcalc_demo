@@ -12,12 +12,15 @@ from django.urls import reverse
 # Local imports
 from .forms import RequestForm
 from .models import UserRequest
-from .utils.arbitration import ai_chooser2
+from .utils.arbitration import ai_chooser
 
 
 def home(request):
+
     '''Home page with Calculator UI'''
+
     if request.method == 'POST':
+
         form = RequestForm(request.POST)
         if form.is_valid():
             req = form.save()
@@ -28,9 +31,9 @@ def home(request):
             parties = req.parties
             measures = req.ea
             ais = req.ai.all()
-            ai_chooser2(req, ais, amount, arbs, proc, parties, measures)
+            ai_chooser(req, ais, amount, arbs, proc, parties, measures)
             return HttpResponseRedirect(reverse('calc:result'))
-            # return HttpResponseRedirect(reverse('calc:result', args=(req.pk,)))
+
         else:
             context = {
                 'title': 'Arbitration Calculator',
@@ -44,6 +47,10 @@ def home(request):
             'title': 'Arbitration Calculator',
         }
         return render(request, 'calc/home.html', context)
+
+
+def home_rus(request):
+    pass
 
 
 def result(request):
@@ -69,6 +76,10 @@ def result(request):
         return render(request, 'calc/result.html', context)
     else:
         return HttpResponseRedirect(reverse('calc:home'))
+
+
+def result_rus(request):
+    pass
 
 
 def about(request):

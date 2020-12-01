@@ -13,7 +13,7 @@ class UserRequest(models.Model):
 
     ARBS = ((1, '1'), (3, '3'),)
 
-    PARTIES = ((1, '1'), (2, '2'), (3, '3'), (4, '4'),)
+    PARTIES = ((2, '2'), (3, '3'), (4, '4'),)
 
     PROC = (
         ('Standard', 'Standard'),
@@ -25,12 +25,18 @@ class UserRequest(models.Model):
         ('No', 'No'),
     )
 
+    TYPE = (
+        ('Domestic', 'Domestic'),
+        ('Corporate', 'Corporate')
+    )
+
     amount = models.FloatField(validators=[MinValueValidator(1)])
     arbs = models.IntegerField(choices=ARBS, default=3)
     proc = models.CharField(max_length=16, choices=PROC, default='Standard')
     ai = models.ManyToManyField(ArbInst)
     ea = models.CharField(max_length=8, choices=EMERGENCY, default='No')
     parties = models.IntegerField(choices=PARTIES, default=2)
+    type = models.CharField(max_length=16, choices=TYPE, default='Domestic')
 
     def __str__(self):
         return f'Request N{self.id} for {self.amount}'

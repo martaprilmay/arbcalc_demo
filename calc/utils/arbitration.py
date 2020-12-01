@@ -1,17 +1,5 @@
 from calc.models import Cost, Rate
 
-
-usd_to_eur = Rate.objects.get(name='USD_EUR').rate
-eur_to_usd = Rate.objects.get(name='EUR_USD').rate
-rub_to_usd = Rate.objects.get(name='RUB_USD').rate
-usd_to_rub = Rate.objects.get(name='USD_RUB').rate
-usd_to_rmb = Rate.objects.get(name='USD_CNY').rate
-rmb_to_usd = Rate.objects.get(name='CNY_USD').rate
-usd_to_hkd = Rate.objects.get(name='USD_HKD').rate
-hkd_to_usd = Rate.objects.get(name='HKD_USD').rate
-sgd_to_usd = Rate.objects.get(name='SGD_USD').rate
-usd_to_sgd = Rate.objects.get(name='USD_SGD').rate
-
 # usd_to_eur = 1
 # eur_to_usd = 1
 # rub_to_usd = 1
@@ -118,6 +106,9 @@ def rac_at_rima(amount, arbs, proc, measures):
 
 
 def scc(amount, arbs, proc, parties, measures):
+
+    usd_to_eur = Rate.objects.get(name='USD_EUR').rate
+    eur_to_usd = Rate.objects.get(name='EUR_USD').rate
 
     amount *= usd_to_eur
 
@@ -507,6 +498,9 @@ def icc(amount, arbs, proc, parties, measures):
 
 def hkiac(amount, arbs, proc, parties, measures):
 
+    usd_to_hkd = Rate.objects.get(name='USD_HKD').rate
+    hkd_to_usd = Rate.objects.get(name='HKD_USD').rate
+
     amount *= usd_to_hkd
     reg_fee = hkd_to_usd * 8000.00
     comment1 = 'The Registration fee is NOT included in the Arbitration fee'
@@ -587,7 +581,12 @@ def hkiac(amount, arbs, proc, parties, measures):
 
 def siac(amount, arbs, proc, parties, measures):
 
-    reg_fee = 2000.00
+    sgd_to_usd = Rate.objects.get(name='SGD_USD').rate
+    usd_to_sgd = Rate.objects.get(name='USD_SGD').rate
+
+    amount *= usd_to_sgd
+
+    reg_fee = 2000.00 * sgd_to_usd
     comment1 = (
         'The Registration fee is NOT included in the Arbitration fee.\nFor Sin'
         'gapore parties the registration (filling) fee is SGD 2 140.'
@@ -643,6 +642,8 @@ def siac(amount, arbs, proc, parties, measures):
     if arbs == 3:
         arbs_fee *= 3
 
+    arbs_fee *= sgd_to_usd
+    admin_fee *= sgd_to_usd
     arb_fee = arbs_fee + admin_fee
 
     arbs_fee = round(arbs_fee, 2)
@@ -662,6 +663,9 @@ def siac(amount, arbs, proc, parties, measures):
 
 
 def viac(amount, arbs, proc, parties, measures):
+
+    usd_to_eur = Rate.objects.get(name='USD_EUR').rate
+    eur_to_usd = Rate.objects.get(name='EUR_USD').rate
 
     amount *= usd_to_eur
     comment1 = 'Registration fee is NOT included in the Arbitration fee.'
@@ -766,6 +770,9 @@ def viac(amount, arbs, proc, parties, measures):
 
 def dis(amount, arbs, proc, parties, measures):
 
+    usd_to_eur = Rate.objects.get(name='USD_EUR').rate
+    eur_to_usd = Rate.objects.get(name='EUR_USD').rate
+
     amount *= usd_to_eur
     reg_fee = 0.0
     comment1 = (
@@ -843,6 +850,14 @@ def dis(amount, arbs, proc, parties, measures):
 
     if arbs == 3:
         arbs_fee = arb1 + arb2 + arb3
+
+    if parties == 3:
+        arbs_fee *= 1.1
+        admin_fee *= 1.1
+
+    if parties == 4:
+        arbs_fee *= 1.2
+        admin_fee *= 1.2
 
     arb_fee = admin_fee + arbs_fee
 
@@ -963,6 +978,9 @@ def kcab(amount, arbs, proc, parties, measures):
 
 
 def cietac(amount, arbs, proc, parties, measures):
+
+    usd_to_rmb = Rate.objects.get(name='USD_CNY').rate
+    rmb_to_usd = Rate.objects.get(name='CNY_USD').rate
 
     amount_c = amount * usd_to_rmb
 
@@ -1165,7 +1183,10 @@ def icac(amount, arbs, proc, parties, measures):
     return result
 
 
-def rspp(amount, arbs, proc, parties, measures):
+def rspp(amount, arbs, proc, measures):
+
+    rub_to_usd = Rate.objects.get(name='RUB_USD').rate
+    usd_to_rub = Rate.objects.get(name='USD_RUB').rate
 
     amount *= usd_to_rub
 
@@ -1263,23 +1284,32 @@ def rspp(amount, arbs, proc, parties, measures):
         f'w and Russian language, arbitartion fee will be {arb_fee} USD.'
     )
 
+    if measures == 'Yes':
+        comment3 = (
+            'The RSPP have no provisions in relation to any kind of emergency '
+            'measures proceeding before constitution of the arbitral tribunal.'
+        )
+
     result = {
         'reg_fee': reg_fee,
         'arb_fee': arb_fee15,
         'arbs_fee': arbs_fee15,
         'admin_fee': admin_fee15,
         'comment1': comment1,
-        'comment2': comment2
+        'comment2': comment2,
+        'comment3': comment3
     }
 
     return result
 
 
-def ai_chooser2(req, ais, amount, arbs, proc, parties, measures):
+def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
+
     result = []
+
     for ai in ais:
         if ai.id == 1:
-            res = rac_at_rima(amount, arbs, proc, parties, measures)
+            res = rac_at_rima(amount, arbs, proc, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
@@ -1341,7 +1371,7 @@ def ai_chooser2(req, ais, amount, arbs, proc, parties, measures):
             obj.save()
             result.append(obj)
         elif ai.id == 6:
-            res = rspp(amount, arbs, proc, parties, measures)
+            res = rspp(amount, arbs, proc, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
@@ -1349,6 +1379,7 @@ def ai_chooser2(req, ais, amount, arbs, proc, parties, measures):
             obj.admin_fee = res['admin_fee']
             obj.comment1 = res['comment1']
             obj.comment2 = res['comment2']
+            obj.comment3 = res['comment3']
             if 'comment0' in res:
                 obj.comment0 = res['comment0']
             obj.save()
@@ -1409,12 +1440,3 @@ def ai_chooser2(req, ais, amount, arbs, proc, parties, measures):
             obj.save()
             result.append(obj)
     return result
-
-
-def calculate_cost(request_object):
-    ais = request_object.ai.all()
-    amount = request_object.amount
-    arbs = request_object.arbs
-    proc = request_object.proc
-
-    return ai_chooser2(request_object, ais, amount, arbs, proc)

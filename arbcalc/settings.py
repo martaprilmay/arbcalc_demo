@@ -21,7 +21,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = '()7gyldvlh=@z7h!ybtqymg=%1zer89agm1az2j@zi=-pejgev'
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -79,19 +78,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'arbcalc.wsgi.application'
 
 
-# Database
+# Databases
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'arbcalc',
-#         'USER': 'postgres',
-#         'PASSWORD': 'Slimahdy12',
-#         'POST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
+# Dev SQLite Database
 
 DATABASES = {
     'default': {
@@ -100,6 +90,22 @@ DATABASES = {
     }
 }
 
+# Dev Postgres Database to be switched with SQLite
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'arbcalc',
+#         'USER': 'postgres',
+#         'PASSWORD': os.environ.get(POSTGRES_PASSWORD),
+#         'POST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+
+# Heroku helper
+# Switches databases settings for Heroku
+django_heroku.settings(locals())
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -157,6 +163,3 @@ CELERY_RESULT_SERIALIZER = 'json'
 CRONJOBS = [
     ('0 * * * *', 'calc.cron.my_scheduled_job')
 ]
-
-# heroku helper
-django_heroku.settings(locals())
