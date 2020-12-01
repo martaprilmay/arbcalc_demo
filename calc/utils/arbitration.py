@@ -1156,7 +1156,7 @@ def cietac(amount, arbs, proc, parties, measures):
 
     # calculating ea_fee
     ea_fee_c = 0
-    if measures = 'Yes':
+    if measures == 'Yes':
         ea_fee_c = 30000.0
 
     arb_fee_c += ea_fee_c
@@ -1280,7 +1280,7 @@ def cietac(amount, arbs, proc, parties, measures):
         'arb_fee': arb_fee_c,
         'arbs_fee': 0.0,
         'admin_fee': 0.0,
-        'ea_fee': ea_fee_c'
+        'ea_fee': ea_fee_c,
         'comment1': comment1,
         'comment2': comment2
     }
