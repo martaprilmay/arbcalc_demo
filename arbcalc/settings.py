@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # 3rd party aps
     'crispy_forms',
     'django_celery_beat',
+    'django_crontab',
     'widget_tweaks',
     # my apps
     'calc.apps.CalcConfig',
@@ -150,6 +151,12 @@ CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+# Djano-crontab ralated settings
+# every hour
+CRONJOBS = [
+    ('0 * * * *', 'calc.cron.my_scheduled_job')
+]
 
 # heroku helper
 django_heroku.settings(locals())
