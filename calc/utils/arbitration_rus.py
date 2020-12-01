@@ -1,3 +1,6 @@
+from calc.models import Cost, Rate
+
+
 def rima_ru(amount, arbs, proc, type):
     pass
 
@@ -10,13 +13,13 @@ def icac_ru(amount, arbs, proc, type):
     pass
 
 
-def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
+def ai_chooser(req, ais, amount, arbs, proc, type):
 
     result = []
 
     for ai in ais:
         if ai.id == 1:
-            res = rima_ru(amount, arbs, proc, measures)
+            res = rima_ru(amount, arbs, proc, type)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
@@ -28,7 +31,7 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.save()
             result.append(obj)
         if ai.id == 2:
-            res = hkiac(amount, arbs, proc, parties, measures)
+            res = rspp_ru(amount, arbs, proc, type)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
@@ -40,7 +43,7 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.save()
             result.append(obj)
         if ai.id == 3:
-            res = siac(amount, arbs, proc, parties, measures)
+            res = icac_ru(amount, arbs, proc, type)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']

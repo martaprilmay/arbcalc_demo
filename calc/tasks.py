@@ -66,6 +66,7 @@ def get_rates():
     get_rate2('CNY')
     get_rate2('HKD')
     get_rate2('SGD')
+    get_rate2('KRW')
 
     # get_rate('USD', 'EUR')
     # get_rate('EUR', 'USD')
