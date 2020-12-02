@@ -8,8 +8,6 @@ import json
 import ssl
 
 
-# celery = Celery('tasks', broker='amqp://guest@localhost//')
-
 def get_rate(currency1, currency2):
 
     key = f'{currency1}_{currency2}'

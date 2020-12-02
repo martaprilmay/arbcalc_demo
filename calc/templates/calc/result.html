@@ -39,34 +39,73 @@
           Arbitration fee
         </div>
         <table class="equalDivide" width="100%">
-          <tr>
-            <td rowspan="2">
-              <div class="arbs_fee">
-                {{ value.arbs_fee }} USD
-              </div>
-              <div class="fee">
-                Arbitrators fee
-              </div>
-            </td>
-            <td>
-              <div class="admin_fee">
-                {{ value.admin_fee }} USD
-              </div>
-              <div class="fee">
-                Administrative fee
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="reg_fee">
-                {{ value.reg_fee }} USD
-              </div>
-              <div class="fee">
-                Registration fee
-              </div>
-            </td>
-          </tr>
+          {% if value.ea_fee %}
+            <tr>
+              <td>
+                <div class="arbs_fee">
+                  {{ value.arbs_fee }} USD
+                </div>
+                <div class="fee">
+                  Arbitrators fee
+                </div>
+              </td>
+              <td>
+                <div class="admin_fee">
+                  {{ value.admin_fee }} USD
+                </div>
+                <div class="fee">
+                  Administrative fee
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="reg_fee">
+                  {{ value.ea_fee }} USD
+                </div>
+                <div class="fee">
+                  Emergency Measures
+                </div>
+              </td>
+              <td>
+                <div class="reg_fee">
+                  {{ value.reg_fee }} USD
+                </div>
+                <div class="fee">
+                  Registration fee
+                </div>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td rowspan="2">
+                <div class="arbs_fee">
+                  {{ value.arbs_fee }} USD
+                </div>
+                <div class="fee">
+                  Arbitrators fee
+                </div>
+              </td>
+              <td>
+                <div class="admin_fee">
+                  {{ value.admin_fee }} USD
+                </div>
+                <div class="fee">
+                  Administrative fee
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="reg_fee">
+                  {{ value.reg_fee }} USD
+                </div>
+                <div class="fee">
+                  Registration fee
+                </div>
+              </td>
+            </tr>
+          {% endif %}
         </table>
 
       <hr>

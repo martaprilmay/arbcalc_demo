@@ -1288,7 +1288,7 @@ def cietac(amount, arbs, proc, measures):
     elif 1000000000 < amount_c <= 2000000000:
         arb_fee_c = 5145000.00 + (amount - 1000000000) * 0.0046
     elif amount_c > 2000000000:
-        arb_fee_c = 9745000.00 + (amount - 1000000) * 0.0045
+        arb_fee_c = 9745000.00 + (amount - 2000000000) * 0.0045
 
     # calculating ea_fee
     ea_fee_c = 0
@@ -1385,8 +1385,6 @@ def cietac(amount, arbs, proc, measures):
     arb_fee = admin_fee + med_arbs_fee
 
     # converting results to USD
-    arb_fee_c *= rmb_to_usd
-    ea_fee_c *= rmb_to_usd
     arb_fee *= hkd_to_usd
     admin_fee *= hkd_to_usd
     min_arbs_fee *= hkd_to_usd
@@ -1396,6 +1394,7 @@ def cietac(amount, arbs, proc, measures):
     # formatting results
     reg_fee_c = round(reg_fee_c, 2)
     arb_fee_c = round(arb_fee_c, 2)
+    ea_fee_c = round(ea_fee_c, 2)
     reg_fee = round(reg_fee, 2)
     arb_fee = round(arb_fee, 2)
     admin_fee = round(admin_fee, 2)
@@ -1405,10 +1404,11 @@ def cietac(amount, arbs, proc, measures):
 
     comment2 = (
         f'If the case is administered by the CIETAC Hong Kong Arbitration Cent'
-        f'er the following estimation applies:\nRegitration fee: {reg_fee} USD,'
-        f'\nArbitration fee: {arb_fee} USD,\nAdministrative fee: {admin_fee} USD'
-        f',\nMinimum Arbitrators fee: {min_arbs_fee} USD,\nMaximun Arbitrators f'
-        f'ee: {max_arbs_fee} USD,\nMediam Arbitrators fee: {med_arbs_fee} USD.'
+        f'er the following estimation applies:\nRegitration fee: {reg_fee} USD'
+        f',\nArbitration fee: {arb_fee} USD,\nAdministrative fee: {admin_fee} '
+        f'USD,\nMinimum Arbitrators fee: {min_arbs_fee} USD,\nMaximum Arbitrat'
+        f'ors fee: {max_arbs_fee} USD,\nMedian Arbitrators fee: {med_arbs_fee}'
+        f' USD.'
     )
 
     # adding results to dict
@@ -1419,7 +1419,7 @@ def cietac(amount, arbs, proc, measures):
         'admin_fee': 0.0,
         'ea_fee': ea_fee_c,
         'comment1': comment1,
-        'comment2': comment2
+        'comment2': comment2,
     }
 
     return result

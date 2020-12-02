@@ -8,6 +8,7 @@ import xlsxwriter as xw
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from .tasks import get_rates
 
 # Local imports
 from .forms import RequestForm
@@ -145,9 +146,10 @@ def to_xlsx(request):
     res_worksheet.write('C2', 'Arbitrators Fee (USD)', column_name)
     res_worksheet.write('D2', 'Administration Fee (USD)', column_name)
     res_worksheet.write('E2', 'Registration Fee (USD)', column_name)
-    res_worksheet.write('F2', 'NB', column_name)
-    res_worksheet.write('G2', 'Comment 1', column_name)
-    res_worksheet.write('H2', 'Comment 2', column_name)
+    res_worksheet.write('F2', 'Emergency Measures (USD)', column_name)
+    res_worksheet.write('G2', 'NB', column_name)
+    res_worksheet.write('H2', 'Comment 1', column_name)
+    res_worksheet.write('I2', 'Comment 2', column_name)
 
     # add data
     row = 2
@@ -158,11 +160,13 @@ def to_xlsx(request):
         res_worksheet.write(row, col+2, ai.arbs_fee, currency)
         res_worksheet.write(row, col+3, ai.admin_fee, currency)
         res_worksheet.write(row, col+4, ai.reg_fee, currency)
+        if ai.ea:
+            res_worksheet.write(row, col+5, ai.ea, currency)
         if ai.comment0:
-            res_worksheet.write(row, col+5, ai.comment0, cell_format)
-        res_worksheet.write(row, col+6, ai.comment1, cell_format)
+            res_worksheet.write(row, col+6, ai.comment0, cell_format)
+        res_worksheet.write(row, col+7, ai.comment1, cell_format)
         if ai.comment2:
-            res_worksheet.write(row, col+7, ai.comment2, cell_format)
+            res_worksheet.write(row, col+8, ai.comment2, cell_format)
         row += 1
 
     res_workbook.close()
@@ -250,3 +254,9 @@ def bar_chart(request):
     response.write(buf_chart.getvalue())
 
     return response
+
+
+def update_rates_manulally(request):
+    get_rates()
+
+    return HttpResponseRedirect(reverse('calc:home'))
