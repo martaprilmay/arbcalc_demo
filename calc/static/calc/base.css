@@ -4,6 +4,38 @@
   padding: 0;
 }
 
+/* about page */
+.about{
+  font-size: medium;
+  font-family: 'Open Sans', sans-serif;
+  margin: 15px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  padding: 0px;
+}
+.my-li{
+  font-size: medium;
+  font-family: 'Open Sans', sans-serif;
+  margin: 15px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  margin-left: 30px;
+  padding: 0px;
+}
+.contacts{
+  font-size: medium;
+  font-family: 'Open Sans', sans-serif;
+  margin: 15px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  padding: 0px;
+}
+@media screen and (min-width:700px) {
+  .ab {
+    width: 80%;
+    margin: auto;
+  }
+}
 /* footer */
 
 footer {
@@ -415,13 +447,6 @@ footer {
   .bttn{
     font-size: medium;
   }
-
-/* about page */
-
-.about{
-  margin: 25px;
-  padding: 10px;
-}
 
 /* font family */
 
