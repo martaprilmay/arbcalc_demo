@@ -197,6 +197,9 @@
     font-size: large;
     margin-bottom: 0px;
   }
+  footer{
+    font-size: small;
+  }
 }
 
 /* tweeking Bootstrap navbar */
