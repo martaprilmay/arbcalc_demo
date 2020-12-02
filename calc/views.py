@@ -160,8 +160,8 @@ def to_xlsx(request):
         res_worksheet.write(row, col+2, ai.arbs_fee, currency)
         res_worksheet.write(row, col+3, ai.admin_fee, currency)
         res_worksheet.write(row, col+4, ai.reg_fee, currency)
-        if ai.ea:
-            res_worksheet.write(row, col+5, ai.ea, currency)
+        if ai.ea_fee:
+            res_worksheet.write(row, col+5, ai.ea_fee, currency)
         if ai.comment0:
             res_worksheet.write(row, col+6, ai.comment0, cell_format)
         res_worksheet.write(row, col+7, ai.comment1, cell_format)
