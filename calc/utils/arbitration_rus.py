@@ -13,7 +13,7 @@ def icac_ru(amount, arbs, proc, type):
     pass
 
 
-def ai_chooser(req, ais, amount, arbs, proc, type):
+def ai_chooser_ru(req, ais, amount, arbs, proc, type):
 
     result = []
 

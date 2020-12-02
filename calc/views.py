@@ -205,16 +205,21 @@ def bar_chart(request):
     ai = [cost.ai.arb_inst.split()[0] for cost in res]
     arbs_fee = np.array([ai.arbs_fee for ai in res])
     admin_fee = np.array([ai.admin_fee for ai in res])
+    ea_fee = np.array([ai.ea_fee for ai in res])
 
     # creating bar
     ind = [x for x, _ in enumerate(ai)]
+    plt.bar(
+        ind, ea_fee, width=0.8, label='Emergency Mesures',
+        color='#d9c1c1', bottom=arbs_fee+admin_fee
+    )
     plt.bar(
         ind, admin_fee, width=0.8, label='Administrative Fee',
         color='silver', bottom=arbs_fee
     )
     plt.bar(
         ind, arbs_fee, width=0.8, label='Arbitrators Fee',
-        color='#CDD5CD'
+        color='#CDD5CD',
     )
 
     # editing ticks, labels, legend and title

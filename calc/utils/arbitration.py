@@ -89,7 +89,7 @@ def rac_at_rima(amount, arbs, proc, measures):
     admin_fee = round(admin_fee, 2)
     arbs_fee = round(arbs_fee, 2)
     arb_fee = round(arb_fee, 2)
-    ea_fee = round(arb_fee, 2)
+    ea_fee = round(ea_fee, 2)
 
     # saving results in a dict
     result = {
@@ -496,6 +496,10 @@ def icc(amount, arbs, proc, measures):
         max_arbs_fee *= 3
         med_arbs_fee *= 3
 
+    # formatting results
+    min_arbs_fee = round(min_arbs_fee, 2)
+    max_arbs_fee = round(max_arbs_fee, 2)
+
     comment2 = (
         f"Arbitrators fee is determined by the ICC Court.\n The estimation abo"
         f"ve is based upon Median Arbitrators fee.\n Minimum Arbitrators fee i"
@@ -511,8 +515,6 @@ def icc(amount, arbs, proc, measures):
     med_arb_fee = admin_fee + med_arbs_fee + ea_fee
 
     # formatting results
-    min_arbs_fee = round(min_arbs_fee, 2)
-    max_arbs_fee = round(max_arbs_fee, 2)
     med_arbs_fee = round(med_arbs_fee, 2)
     admin_fee = round(admin_fee, 2)
     med_arb_fee = round(med_arb_fee, 2)
@@ -616,6 +618,7 @@ def hkiac(amount, arbs, proc, measures):
             f'Emergency arbitrator proceedings also require an application dep'
             f'osit of {in_USD} USD.'
         )
+
     # converting results
     arbs_fee *= hkd_to_usd
     admin_fee *= hkd_to_usd
@@ -833,6 +836,7 @@ def viac(amount, arbs, proc, measures):
 
     # discretion on arbs_fee
     max_arbs_fee = 1.4 * arbs_fee
+    max_arbs_fee = round(max_arbs_fee, 2)
     comment2 = (
         f'The Secretary General of VIAC may increase the arbitrators’ fee by a'
         f' maximum total of 40 percent. In this case Arbitrators fee may reach'
@@ -840,6 +844,7 @@ def viac(amount, arbs, proc, measures):
     )
 
     # no emergency measures in VIAC
+    no_ea = 1
     comment0 = ''
     if measures == 'Yes':
         comment0 = (
@@ -857,7 +862,6 @@ def viac(amount, arbs, proc, measures):
     arbs_fee = round(arbs_fee, 2)
     admin_fee = round(admin_fee, 2)
     arb_fee = round(arb_fee, 2)
-    max_arbs_fee = round(max_arbs_fee, 2)
 
     # adding results to dict
     result = {
@@ -865,6 +869,7 @@ def viac(amount, arbs, proc, measures):
         'arb_fee': arb_fee,
         'arbs_fee': arbs_fee,
         'admin_fee': admin_fee,
+        'no_ea': no_ea,
         'comment0': comment0,
         'comment1': comment1,
         'comment2': comment2,
@@ -975,6 +980,7 @@ def dis(amount, arbs, proc, parties, measures):
         admin_fee *= 1.2
 
     # no emergency measures in dis
+    no_ea = 1
     comment0 = ''
     if measures == 'Yes':
         comment0 = (
@@ -1001,6 +1007,7 @@ def dis(amount, arbs, proc, parties, measures):
         'admin_fee': admin_fee,
         'arbs_fee': arbs_fee,
         'arb_fee': arb_fee,
+        'no_ea': no_ea,
         'comment0': comment0,
         'comment1': comment1
     }
@@ -1485,6 +1492,7 @@ def icac(amount, arbs, proc, measures):
             )
 
     # no emergency measures in ICAC
+    no_ea = 1
     if measures == 'Yes':
         if comment0:
             comment0 += '\n'
@@ -1504,6 +1512,7 @@ def icac(amount, arbs, proc, measures):
         'admin_fee': admin_fee,
         'arbs_fee': arbs_fee,
         'arb_fee': arb_fee,
+        'no_ea': no_ea,
         'comment0': comment0,
         'comment1': comment1,
         'comment2': comment2
@@ -1626,6 +1635,7 @@ def rspp(amount, arbs, proc, measures):
     )
 
     # No emergency proceedings in RSPP
+    no_ea = 1
     comment0 = ''
     if measures == 'Yes':
         comment0 += (
@@ -1639,6 +1649,7 @@ def rspp(amount, arbs, proc, measures):
         'arb_fee': arb_fee15,
         'arbs_fee': arbs_fee15,
         'admin_fee': admin_fee15,
+        'no_ea': no_ea,
         'comment1': comment1,
         'comment2': comment2,
         'comment0': comment0
@@ -1661,6 +1672,8 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.admin_fee = res['admin_fee']
             if res['ea_fee']:
                 obj.ea_fee = res['ea_fee']
+            else:
+                obj.ea_fee = 0
             obj.comment1 = res['comment1']
             if 'comment0' in res:
                 obj.comment0 = res['comment0']
@@ -1675,6 +1688,8 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.admin_fee = res['admin_fee']
             if res['ea_fee']:
                 obj.ea_fee = res['ea_fee']
+            else:
+                obj.ea_fee = 0
             obj.comment1 = res['comment1']
             if 'comment0' in res:
                 obj.comment0 = res['comment0']
@@ -1691,6 +1706,8 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.admin_fee = res['admin_fee']
             if res['ea_fee']:
                 obj.ea_fee = res['ea_fee']
+            else:
+                obj.ea_fee = 0
             obj.comment1 = res['comment1']
             if 'comment0' in res:
                 obj.comment0 = res['comment0']
@@ -1705,6 +1722,8 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.admin_fee = res['admin_fee']
             if res['ea_fee']:
                 obj.ea_fee = res['ea_fee']
+            else:
+                obj.ea_fee = 0
             obj.comment1 = res['comment1']
             obj.comment2 = res['comment2']
             if 'comment0' in res:
@@ -1719,7 +1738,9 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.arbs_fee = res['arbs_fee']
             obj.admin_fee = res['admin_fee']
             if res['ea_fee']:
-                obj.comment2 = res['ea_fee']
+                obj.ea_fee = res['ea_fee']
+            else:
+                obj.ea_fee = 0
             obj.comment1 = res['comment1']
             obj.comment2 = res['comment2']
             if 'comment0' in res:
@@ -1733,6 +1754,8 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.arb_fee = res['arb_fee']
             obj.arbs_fee = res['arbs_fee']
             obj.admin_fee = res['admin_fee']
+            if res['no_ea'] == 1:
+                obj.ea_fee = 0
             obj.comment1 = res['comment1']
             obj.comment2 = res['comment2']
             if 'comment0' in res:
@@ -1746,6 +1769,8 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.arb_fee = res['arb_fee']
             obj.arbs_fee = res['arbs_fee']
             obj.admin_fee = res['admin_fee']
+            if res['no_ea'] == 1:
+                obj.ea_fee = 0
             obj.comment1 = res['comment1']
             obj.comment2 = res['comment2']
             if 'comment0' in res:
@@ -1759,6 +1784,8 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.arb_fee = res['arb_fee']
             obj.arbs_fee = res['arbs_fee']
             obj.admin_fee = res['admin_fee']
+            if res['no_ea'] == 1:
+                obj.ea_fee = 0
             if res['comment0']:
                 obj.comment0 = res['comment0']
             obj.comment1 = res['comment1']
@@ -1773,6 +1800,8 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.admin_fee = res['admin_fee']
             if res['ea_fee']:
                 obj.ea_fee = res['ea_fee']
+            else:
+                obj.ea_fee = 0
             obj.comment1 = res['comment1']
             obj.comment2 = res['comment2']
             obj.save()
@@ -1784,6 +1813,8 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.arb_fee = res['arb_fee']
             obj.arbs_fee = res['arbs_fee']
             obj.admin_fee = res['admin_fee']
+            if res['no_ea'] == 1:
+                obj.ea_fee = 0
             if res['comment0']:
                 obj.comment0 = res['comment0']
             obj.comment1 = res['comment1']
@@ -1799,6 +1830,8 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.admin_fee = res['admin_fee']
             if res['ea_fee']:
                 obj.ea_fee = res['ea_fee']
+            else:
+                obj.ea_fee = 0
             obj.comment1 = res['comment1']
             obj.save()
             result.append(obj)
@@ -1811,6 +1844,8 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.admin_fee = res['admin_fee']
             if res['ea_fee']:
                 obj.ea_fee = res['ea_fee']
+            else:
+                obj.ea_fee = 0
             obj.comment1 = res['comment1']
             obj.comment2 = res['comment2']
             if 'comment0' in res:
