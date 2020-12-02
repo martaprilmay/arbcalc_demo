@@ -612,6 +612,7 @@ def hkiac(amount, arbs, proc, measures):
     if measures == 'Yes':
         ea_fee = 200000 * hkd_to_usd
         in_USD = 250000 * hkd_to_usd
+        in_USD = round(in_USD, 2)
         comment2 += (
             f'Emergency arbitrator proceedings also require an application dep'
             f'osit of {in_USD} USD.'
@@ -1212,7 +1213,7 @@ def kcab(amount, arbs, proc, measures):
     # calculating emergency measures
     ea_fee = 0
     if measures == 'Yes':
-        ea_fee = 180000000.0 * krw_to_usd
+        ea_fee = 18000000.0 * krw_to_usd
 
     # converting to USD
     min_arbs_fee *= krw_to_usd
