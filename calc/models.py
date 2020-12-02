@@ -9,6 +9,13 @@ class ArbInst(models.Model):
         return self.arb_inst
 
 
+class ArbInstRu(models.Model):
+    arb_inst = models.CharField(max_length=64)
+
+    def __str__(self):
+        return self.arb_inst
+
+
 class UserRequest(models.Model):
 
     ARBS = ((1, '1'), (3, '3'),)
@@ -25,21 +32,33 @@ class UserRequest(models.Model):
         ('No', 'No'),
     )
 
-    TYPE = (
-        ('Domestic', 'Domestic'),
-        ('Corporate', 'Corporate')
-    )
-
     amount = models.FloatField(validators=[MinValueValidator(1)])
     arbs = models.IntegerField(choices=ARBS, default=3)
     proc = models.CharField(max_length=16, choices=PROC, default='Standard')
     ai = models.ManyToManyField(ArbInst)
     ea = models.CharField(max_length=8, choices=EMERGENCY, default='No')
     parties = models.IntegerField(choices=PARTIES, default=2)
-    type = models.CharField(max_length=16, choices=TYPE, default='Domestic')
 
     def __str__(self):
         return f'Request N{self.id} for {self.amount}'
+
+
+class UserRequestRu(models.Model):
+    ARBS = ((1, '1'), (3, '3'),)
+    TYPE_RU = (
+        ('Domestic', 'Внутренний'),
+        ('Corporate', 'Корпоративный')
+    )
+    PROC_RU = (
+        ('Standard', 'Стандартная'),
+        ('Expedited', 'Ускоренная'),
+    )
+
+    amount = models.FloatField(validators=[MinValueValidator(1)])
+    arbs = models.IntegerField(choices=ARBS, default=3)
+    ai = models.ManyToManyField(ArbInstRu)
+    proc = models.CharField(max_length=16, choices=PROC_RU, default='Standard')
+    type = models.CharField(max_length=16, choices=TYPE_RU, default='Domestic')
 
 
 class Cost(models.Model):

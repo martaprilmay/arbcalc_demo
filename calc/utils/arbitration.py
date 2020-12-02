@@ -23,6 +23,8 @@ def rac_at_rima(amount, arbs, proc, measures):
         proc = 'Standard'
 
     if proc == 'Expedited' and arbs == 3:
+        if comment0:
+            comment0 += '\n'
         comment0 += (
             'A case is settled by a sole arbitrator in an expedited arbitratio'
             'n under RAC Rules.\nThe following estimation is for a sole arbitr'
@@ -1521,7 +1523,7 @@ def icac(amount, arbs, proc, measures):
     return result
 
 
-def rspp(amount, arbs, proc, measures):
+def rspp(amount, arbs, proc, parties, measures):
     '''
     Calculates fees for international arbitration in the Arbitration Centre at
     the Russian Union of Industrialists and Entrepreneurs.
@@ -1534,6 +1536,10 @@ def rspp(amount, arbs, proc, measures):
     amount *= usd_to_rub
 
     reg_fee = rub_to_usd * 30000.0
+    if parties == 3:
+        reg_fee += rub_to_usd * 10000.0
+    if parties == 4:
+        reg_fee += rub_to_usd * 20000.0
     comment1 = "The Registration fee is NOT included in the Arbitration fee."
 
     # calculate arb_fee (sole arbitrator)
@@ -1748,7 +1754,7 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.save()
             result.append(obj)
         elif ai.id == 6:
-            res = rspp(amount, arbs, proc, measures)
+            res = rspp(amount, arbs, proc, parties, measures)
             obj = Cost(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']

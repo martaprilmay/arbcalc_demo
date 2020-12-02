@@ -11,9 +11,10 @@ from django.urls import reverse
 from .tasks import get_rates
 
 # Local imports
-from .forms import RequestForm
-from .models import UserRequest
+from .forms import RequestForm, RequestFormRu
+from .models import UserRequest, UserRequestRu
 from .utils.arbitration import ai_chooser
+from .utils.arbitration_ru import ai_chooser_ru
 
 
 def home(request):
@@ -50,8 +51,34 @@ def home(request):
         return render(request, 'calc/home.html', context)
 
 
-def home_rus(request):
-    pass
+def home_ru(request):
+    if request.method == 'POST':
+
+        form = RequestFormRu(request.POST)
+        if form.is_valid():
+            req = form.save()
+            request.session['last_id'] = req.pk
+            amount = req.amount
+            arbs = req.arbs
+            proc = req.proc
+            type = req.type
+            ais = req.ai.all()
+            ai_chooser_ru(req, ais, amount, arbs, proc, type)
+            return HttpResponseRedirect(reverse('calc:result-ru'))
+
+        else:
+            context = {
+                'title': 'Arbitration Calculator',
+                'form': form,
+            }
+            return render(request, 'calc/home-ru.html', context)
+    else:
+        form = RequestFormRu()
+        context = {
+            'form': form,
+            'title': 'Arbitration Calculator',
+        }
+        return render(request, 'calc/home.html', context)
 
 
 def result(request):
@@ -79,8 +106,27 @@ def result(request):
         return HttpResponseRedirect(reverse('calc:home'))
 
 
-def result_rus(request):
-    pass
+def result_ru(request):
+    ''' Page with results for user's request'''
+    if 'last_id' in request.session:
+        last_id = request.session['last_id']
+        req = UserRequestRu.objects.get(pk=last_id)
+        amount = req.amount
+        arbs = req.arbs
+        proc = req.proc
+        type = req.type
+        res = req.costs.all().order_by('arb_fee')
+        context = {
+            'title': 'Arbitration Calculator - Results',
+            'result': res,
+            'amount': amount,
+            'arbs': arbs,
+            'proc': proc,
+            'type': type,
+        }
+        return render(request, 'calc/result.html', context)
+    else:
+        return HttpResponseRedirect(reverse('calc:home'))
 
 
 def about(request):

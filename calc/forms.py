@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import UserRequest, ArbInst
+from .models import UserRequest, UserRequestRu, ArbInst, ArbInstRu
 
 
 class RequestForm(forms.ModelForm):
@@ -24,6 +24,27 @@ class RequestForm(forms.ModelForm):
             "parties": "Number of Parties",
         }
         fields = ['amount', 'arbs', 'parties', 'proc', 'ea', 'ai']
+
+
+class RequestFormRu(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(RequestForm, self).__init__(*args, **kwargs)
+        self.fields['ai'].widget = forms.CheckboxSelectMultiple(
+            choices=self.fields['ai'].choices
+        )
+        self.fields['ai'].queryset = ArbInstRu.objects.order_by('arb_inst')
+
+    class Meta:
+        model = UserRequestRu
+        ordering = ['ArbInst__arb_inst']
+        labels = {
+            "amount": "Сумма требований",
+            "arbs": "Кол-во арбитров",
+            "proc": "Вид процедуры",
+            "type": "Арбитражное учреждение",
+        }
+        fields = ['amount', 'arbs', 'proc', 'ai']
 
 
 # PROCEDURE = ["Standard", "Expedited"]
