@@ -123,7 +123,7 @@ def to_xlsx(request):
     currency = res_workbook.add_format({'num_format': '#,##0.00'})
 
     # add title with all parameters
-    res_worksheet.merge_range('A1:H1', 'Merged Range')
+    res_worksheet.merge_range('A1:I1', 'Merged Range')
     title = (
         f'Fees for {req.amount} USD, {req.arbs} Arbitrator(s), {req.parties} '
         f'Parties, {req.proc} Procedure, Emergency Measures: {req.ea}.'
@@ -131,8 +131,8 @@ def to_xlsx(request):
     res_worksheet.write('A1', title, ttl)
 
     # set columns widths rows hieghts
-    res_worksheet.set_column('A:E', 20)
-    res_worksheet.set_column('F:H', 40)
+    res_worksheet.set_column('A:F', 20)
+    res_worksheet.set_column('G:I', 40)
     res_worksheet.set_row(0, 30)
     res_worksheet.set_row(1, 30)
 
