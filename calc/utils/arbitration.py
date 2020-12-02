@@ -1673,7 +1673,7 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.arbs_fee = res['arbs_fee']
             obj.admin_fee = res['admin_fee']
             if res['ea_fee']:
-                obj.comment2 = res['ea_fee']
+                obj.ea_fee = res['ea_fee']
             obj.comment1 = res['comment1']
             if 'comment0' in res:
                 obj.comment0 = res['comment0']
