@@ -152,6 +152,9 @@
     padding: 0px;
     margin: 0px;
   }
+  .left {
+    width: 38%;
+  }
   .form-group{
     padding-bottom: 0px;
     margin-bottom: 4px;
