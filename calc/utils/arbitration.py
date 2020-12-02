@@ -293,7 +293,7 @@ def scc(amount, arbs, proc, measures):
         if comment0:
             comment0 += '\n'
         comment0 += (
-            'If the amount in dispute exceeds EUR 5,000,000 the SCC Board de'
+            'If the amount in dispute exceeds EUR 5 000 000 the SCC Board de'
             'termines the Arbitrators fee.'
         )
 
