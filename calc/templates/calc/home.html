@@ -8,12 +8,12 @@
     <form action="{% url 'calc:home' %}" method="post">
       {% csrf_token %}
       <div class="cntr">
-        <div class="ctr centr padding-top-15">
+        <div class="ctr centr padding-top-15" style="margin-left: 7px; margin-right: 7px;">
           <h3 style="padding-bottom:0px">Fee Calculator</h3>
         </div>
       </div>
       <div class="cntr">
-        <div class="centr padding-15">
+        <div class="centr padding-15" style="margin-left: 7px; margin-right: 7px;">
           <div class="right">
             <hr class="black">
             {{ form.amount|as_crispy_field }}
@@ -32,7 +32,7 @@
         </div>
       </div>
       <div class="cntr">
-        <div class="ctr centr padding-btm-15">
+        <div class="ctr centr padding-btm-15" style="margin-left: 7px; margin-right: 7px;">
         <input class="bttn" type="submit" name="Calculate" value="Calculate">
         </div>
       </div>

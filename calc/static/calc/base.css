@@ -90,6 +90,26 @@
   padding-left: 20px;
 }
 
+@media screen and (max-width:500px){
+  #div_id_parties, #div_id_ea,
+  #div_id_ai, #div_id_proc,
+  #div_id_arbs, #div_id_amount,{
+    font-size: medium;
+  }
+  h3{
+    font-size: x-large;
+  }
+}
+@media screen and (max-width:378px){
+  #div_id_parties, #div_id_ea,
+  #div_id_ai, #div_id_proc,
+  #div_id_arbs, #div_id_amount,{
+    font-size: small;
+  }
+  h3{
+    font-size: x-large;
+  }
+}
 
 /* tweeking Bootstrap navbar */
 
@@ -126,6 +146,12 @@
     font-family: 'Open Sans', sans-serif;
 }
 
+@media screen and (max-width:450px){
+  .navbar-custom .navbar-brand,
+  .navbar-custom .navbar-text {
+      font-size: large;
+    }
+}
 /* results */
 
 .res-wrapper{
@@ -200,7 +226,9 @@
   text-align: center;
   margin-bottom: 0px;
 }
-
+/* @media screen and (max-width:450px){
+  .admin_fee, .arbs_fee, .a_fee,
+  .arb_fee, .reg_fee, */
 
 /* footer */
 
