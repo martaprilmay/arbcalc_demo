@@ -4,6 +4,24 @@
   padding: 0;
 }
 
+/* footer */
+
+footer {
+  position: sticky;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #C4C4C4;
+  text-align: center;
+  padding: 15px;
+}
+
+.flex-wrapper {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  justify-content: space-between
+}
 
 /* main page grid struggle (( */
 
@@ -151,13 +169,14 @@
   .right {
     padding: 0px;
     margin: 0px;
+    margin-bottom: 5px;
   }
   .left {
     width: 38%;
   }
   .form-group{
-    padding-bottom: 0px;
-    margin-bottom: 4px;
+    padding-bottom: 1px;
+    margin-bottom: 7px;
   }
   .form-check-label{
     font-size: small;
@@ -200,7 +219,7 @@
     font-size: large;
     margin-bottom: 0px;
   }
-  footer{
+  .my-footer{
     font-size: small;
   }
 }
@@ -243,14 +262,17 @@
 @media screen and (max-width:410px){
   .navbar-custom .navbar-brand,
   .navbar-custom .navbar-text {
-      font-size: large;
-    }
+    font-size: large;
+  }
+  .navbar-custom .navbar-nav .nav-link {
+    font-size: medium;
+  }
 }
 /* results */
 
 .res-wrapper{
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   flex-wrap: wrap;
   margin-right: 15px;
   margin-left: 15px;
@@ -320,27 +342,65 @@
   text-align: center;
   margin-bottom: 0px;
 }
-/* @media screen and (max-width:450px){
-  .admin_fee, .arbs_fee, .a_fee,
-  .arb_fee, .reg_fee, */
 
-/* footer */
-
-footer {
-  position: sticky;
-  left: 0;
-  bottom: 0;
-  width: 100%;
+.bttn {
   background-color: #C4C4C4;
   text-align: center;
-  padding: 15px;
+  font-size: large;
+  padding: 10px;
+  /* margin-left: 10px;
+  margin-right: 10px; */
+  border-radius: 4px;
+  border: none;
+}
+.bttn:hover {
+  background-color: #CDD5CD;
+  text-align: center;
+  padding: 10px;
+  border-radius: 4px;
+  border: none;
 }
 
-.flex-wrapper {
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
-  justify-content: space-between
+.t_header{
+  font-size: large;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 8px;
+}
+.t_header2{
+  font-size: large;
+  text-align: center;
+}
+
+@media screen and (max-width:378px){
+  .admin_fee, .arbs_fee, .a_fee,
+  .reg_fee, .ai, .t_header, .t_header2 {
+    font-size: medium;
+  }
+
+  .arb_fee{
+    font-size: large;
+  }
+
+  .com{
+    font-size: x-small;
+  }
+  .nb{
+    font-size: small;
+  }
+
+  .bttn{
+    font-size: medium;
+  }
+
+@media only screen and (min-width: 1078px) {
+
+  .res-margins{
+    width: 100px;
+  }
+  .desktop-res{
+    display: flex;
+  }
 }
 
 /* about page */
@@ -371,17 +431,6 @@ footer {
   position: sticky;
 }
 
-.t_header{
-  font-size: large;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 8px;
-}
-.t_header2{
-  font-size: large;
-  text-align: center;
-}
-
 body {
   height: 100vh;
   font-family: 'Open Sans', sans-serif;
@@ -393,21 +442,4 @@ body {
   text-align: center;
   width: 1000px;
   margin: auto;
-}
-.bttn {
-  background-color: #C4C4C4;
-  text-align: center;
-  font-size: large;
-  padding: 10px;
-  /* margin-left: 10px;
-  margin-right: 10px; */
-  border-radius: 4px;
-  border: none;
-}
-.bttn:hover {
-  background-color: #CDD5CD;
-  text-align: center;
-  padding: 10px;
-  border-radius: 4px;
-  border: none;
 }

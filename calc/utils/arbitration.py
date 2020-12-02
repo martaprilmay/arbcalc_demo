@@ -1396,6 +1396,7 @@ def cietac(amount, arbs, proc, measures):
     # formatting results
     reg_fee_c = round(reg_fee_c, 2)
     arb_fee_c = round(arb_fee_c, 2)
+    reg_fee = round(reg_fee, 2)
     arb_fee = round(arb_fee, 2)
     admin_fee = round(admin_fee, 2)
     min_arbs_fee = round(min_arbs_fee, 2)
