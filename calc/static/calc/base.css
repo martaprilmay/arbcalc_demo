@@ -131,11 +131,6 @@
   #div_id_ai, #div_id_proc,
   #div_id_arbs, #div_id_amount,{
     font-size: small;
-    padding: 5px;
-    margin: 5px;
-  }
-  .middle {
-    width: 20px;
   }
   .padding-15:{
     padding: 10px;
