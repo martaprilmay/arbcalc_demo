@@ -1099,7 +1099,7 @@ def aiac(amount, arbs, proc, measures):
         ea_fee = 2120.0
 
     # calculating arb_fee
-    arb_fee = arbs_fee + admin_fee
+    arb_fee = arbs_fee + admin_fee + ea_fee
 
     # formatting results
     arbs_fee = round(arbs_fee, 2)
