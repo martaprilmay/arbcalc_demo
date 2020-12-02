@@ -17,16 +17,16 @@ def rac_at_rima(amount, arbs, proc, measures):
     # limitations on expedited procedure
     if proc == 'Expedited' and amount >= 500000:
         comment0 += (
-            'Expedited arbitration only allowed under US$ 500 000 under RIMA R'
-            'ules.\nType of arbitration was changed to "Standard".'
+            'Expedited arbitration only allowed under USD 500 000 under RAC Ru'
+            'les.\nType of arbitration was changed to "Standard".'
         )
         proc = 'Standard'
 
     if proc == 'Expedited' and arbs == 3:
         comment0 += (
-            'A case is settled by a sole arbitrator in an Expedited arbitratio'
-            'n under RIMA Rules.\nThe following estimation is for a sole arbit'
-            'rator.'
+            'A case is settled by a sole arbitrator in an expedited arbitratio'
+            'n under RAC Rules.\nThe following estimation is for a sole arbitr'
+            'ator.'
         )
         arbs = 1
 
@@ -83,8 +83,8 @@ def rac_at_rima(amount, arbs, proc, measures):
     comment3 = ''
     if measures == 'Yes':
         comment3 += (
-            'The RIMA Rules set no additional costs for emergency measures pro'
-            'ceedings'
+            'The RAC Rules set no additional costs for emergency measures proc'
+            'eedings'
         )
 
     # formatting results
@@ -482,10 +482,10 @@ def icc(amount, arbs, proc, measures):
     if amount < 3000000 and proc == 'Standard':
         comment0 = (
             'NB! The Expedited Procedure of the ICC Rules apply automatica'
-            'lly to cases with amounts in dispute less then US$ 2 000 000 if'
+            'lly to cases with amounts in dispute less then USD 2 000 000 if'
             ' the arbitration agreement was concluded on or after 1 March '
             '2017 and before 1 January 2021 or to cases with amounts in disput'
-            'e less thenless then US$ 3 000 000 if the arbitration agreement w'
+            'e less thenless then USD 3 000 000 if the arbitration agreement w'
             'as concluded on or after 1 January 2021.\nThe Expedited Procedure'
             ' will not apply if the parties opt out in their arbitration agree'
             'ment.'
@@ -1141,8 +1141,8 @@ def kcab(amount, arbs, proc, measures):
     if proc == 'Standard' and amount < 500000000:
         in_usd = 500000000 * krw_to_usd
         comment0 += (
-            f'If the amount in dispute is less then {in_usd} '
-            f'USD rules of expedited procedure shall apply.'
+            f'If the amount in dispute is less then {in_usd} USD rules of expe'
+            f'dited procedure shall apply.'
         )
 
     # calculating admin_fee and arbs_fee
@@ -1440,7 +1440,7 @@ def icac(amount, arbs, proc, measures):
     # limits on expedited arbitration in ICAC
     if proc == "Expedited" and amount > 50000:
         comment0 += (
-            'Expedited arbitration only allowed under US$ 500 000 under ICAC R'
+            'Expedited arbitration only allowed under USD 500 000 under ICAC R'
             'ules.\nType of arbitration was changed to "Standard".'
         )
         proc = 'Standard'
