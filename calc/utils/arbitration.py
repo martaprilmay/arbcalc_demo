@@ -77,20 +77,19 @@ def rac_at_rima(amount, arbs, proc, measures):
         if amount < 500000:
             arbs_fee *= 1.2
 
-    arb_fee = admin_fee + arbs_fee
-
     # emergency peasures
-    comment3 = ''
+    ea_fee = 0
     if measures == 'Yes':
-        comment3 += (
-            'The RAC Rules set no additional costs for emergency measures proc'
-            'eedings'
-        )
+        rub_to_usd = Rate.objects.get(name='RUB_USD').rate
+        ea_fee = 100000 * rub_to_usd
+
+    arb_fee = admin_fee + arbs_fee + ea_fee
 
     # formatting results
     admin_fee = round(admin_fee, 2)
     arbs_fee = round(arbs_fee, 2)
     arb_fee = round(arb_fee, 2)
+    ea_fee = round(arb_fee, 2)
 
     # saving results in a dict
     result = {
@@ -98,9 +97,9 @@ def rac_at_rima(amount, arbs, proc, measures):
         'admin_fee': admin_fee,
         'arbs_fee': arbs_fee,
         'arb_fee': arb_fee,
+        'ea_fee': ea_fee,
         'comment0': comment0,
         'comment1': comment1,
-        'comment3': comment3,
     }
 
     return result
@@ -1660,6 +1659,8 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.arb_fee = res['arb_fee']
             obj.arbs_fee = res['arbs_fee']
             obj.admin_fee = res['admin_fee']
+            if res['ea_fee']:
+                obj.ea_fee = res['ea_fee']
             obj.comment1 = res['comment1']
             if 'comment0' in res:
                 obj.comment0 = res['comment0']
