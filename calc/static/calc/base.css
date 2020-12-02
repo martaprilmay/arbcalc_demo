@@ -343,6 +343,9 @@ footer {
   margin-bottom: 0px;
 }
 
+.middle-res{
+  width: 35px;
+}
 .bttn {
   background-color: #C4C4C4;
   text-align: center;
@@ -393,6 +396,11 @@ footer {
     font-size: medium;
   }
 
+@media screen and (max-width: 500px) {
+  .middle-res{
+    width: 10px;
+  }
+}
 @media only screen and (min-width: 1078px) {
 
   .res-margins{
