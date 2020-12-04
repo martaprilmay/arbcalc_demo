@@ -38,7 +38,7 @@ def home(request):
 
         else:
             context = {
-                'title': 'Arbitration Calculator',
+                'title': 'Arbitration Fee Calculator',
                 'form': form,
             }
             return render(request, 'calc/home.html', context)
@@ -68,7 +68,7 @@ def home_ru(request):
 
         else:
             context = {
-                'title': 'Arbitration Calculator',
+                'title': 'Арбитражный калькулятор',
                 'form': form,
             }
             return render(request, 'calc/home-ru.html', context)
@@ -93,7 +93,7 @@ def result(request):
         measures = req.ea
         res = req.costs.all().order_by('arb_fee')
         context = {
-            'title': 'Arbitration Calculator - Results',
+            'title': 'Arbitration Fee Calculator - Results',
             'result': res,
             'amount': amount,
             'arbs': arbs,
@@ -117,7 +117,7 @@ def result_ru(request):
         type = req.type
         res = req.costs.all().order_by('arb_fee')
         context = {
-            'title': 'Arbitration Calculator - Results',
+            'title': 'Арбитражный калькулятор - результаты',
             'result': res,
             'amount': amount,
             'arbs': arbs,
@@ -130,8 +130,13 @@ def result_ru(request):
 
 
 def about(request):
-    context = {'title': 'Arbitration Calculator - About'}
+    context = {'title': 'Arbitration Fee Calculator - About'}
     return render(request, 'calc/about.html', context)
+
+
+def about_ru(request):
+    context = {'title': 'О калькуляторе'}
+    return render(request, 'calc/about-ru.html', context)
 
 
 def to_xlsx(request):
