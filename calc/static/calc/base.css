@@ -171,7 +171,7 @@ footer {
   #div_id_parties, #div_id_ea,
   #div_id_ai, #div_id_proc,
   #div_id_arbs, #div_id_amount,
-  #div_id_type{
+  #div_id_type,{
     font-size: medium;
   }
   .form-check-label{
