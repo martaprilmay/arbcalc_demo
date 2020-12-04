@@ -120,6 +120,12 @@ footer {
   -webkit-appearance: none;
 }
 
+#div_id_type{
+  font-size: large;
+  font-family: 'Open Sans', sans-serif;
+  -webkit-appearance: none;
+}
+
 #div_id_ai{
   font-size: large;
   font-family: 'Open Sans', sans-serif;
@@ -164,7 +170,8 @@ footer {
 @media screen and (max-width:500px){
   #div_id_parties, #div_id_ea,
   #div_id_ai, #div_id_proc,
-  #div_id_arbs, #div_id_amount,{
+  #div_id_arbs, #div_id_amount,
+  #div_id_type{
     font-size: medium;
   }
   .form-check-label{

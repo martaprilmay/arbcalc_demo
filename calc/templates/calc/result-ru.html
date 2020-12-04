@@ -1,0 +1,88 @@
+{% extends 'calc/base-ru.html' %}
+
+{% block content %}
+<br>
+<div class="t_header">
+  АРБИТРАЖНЫЕ СБОРЫ
+</div>
+<div class="t_header2">
+    {{ amount }} руб. &#124; {{ arbs }} арбитр(а)
+</div>
+<div class="t_header2">
+    {{ proc }} процедура &#124; {{ type }} спор
+</div>
+<br>
+<div class="cntr">
+  <form action="{% url 'calc:xls-ru' %}">
+    <input class="bttn" style="margin-left: 12px; margin-right: 0px;" type="submit" value="Скачать xls таблицу" />
+  </form>
+  <div class="middle-res"></div>
+  <form action="{% url 'calc:pdf-ru' %}">
+    <input class="bttn" style="margin-left: 0px; margin-right: 12px;" type="submit" value="Скачать диаграмму" />
+  </form>
+</div>
+
+  <div class="res-wrapper">
+    {% for value in result %}
+    <div class="resblock">
+      <p class="ai">{{ value.ai }}</p>
+      {% if value.comment0 %}
+        <p class="nb">{{ value.comment0 }}</p>
+      {% endif %}
+
+        <p class="arb_fee">{{ value.arb_fee }} руб.</p>
+        <div class="a_fee">
+          Арбитражный сбор
+        </div>
+        <table class="equalDivide" width="100%">
+            <tr>
+              <td rowspan="2">
+                <div class="arbs_fee">
+                  {{ value.arbs_fee }} руб.
+                </div>
+                <div class="fee">
+                  Гонорарный сбор
+                </div>
+              </td>
+              <td>
+                <div class="admin_fee">
+                  {{ value.admin_fee }} руб.
+                </div>
+                <div class="fee">
+                  Административный сбор
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="reg_fee">
+                  {{ value.reg_fee }} руб.
+                </div>
+                <div class="fee">
+                  Регистрационный сбор
+                </div>
+              </td>
+            </tr>
+        </table>
+
+      <hr>
+      <p class="com">*{{ value.comment1 }}</p>
+      {% if value.comment2 %}
+        <p class="com">**{{ value.comment2 }}</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+
+  </div>
+
+<br>
+<div class="cntr">
+  <form action="{% url 'calc:home-ru' %}">
+    <input class="bttn" type="submit" value="Новый рачет" />
+  </form>
+</div>
+<br>
+
+
+
+{% endblock %}

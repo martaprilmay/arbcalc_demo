@@ -1,4 +1,4 @@
-from calc.models import Cost, Rate
+from calc.models import CostRu, Rate
 
 
 def rima_ru(amount, arbs, proc, type):
@@ -7,14 +7,14 @@ def rima_ru(amount, arbs, proc, type):
     arbs_fee = 0
     comment0 = ''
 
-    if type == 'Corporate':
+    if type == 'Корпоративный':
 
         reg_fee = 40000.0
         comment1 = (
             "Сумма регистрационного сбора включена в сумму арбитражного сбора."
         )
 
-        if proc == 'Expedited':
+        if proc == 'Ускоренная':
             comment0 += (
                 'Ускоренная процедура возможна только в арбитраже внутренних с'
                 'поров. Результаты для стандартной процедуры.'
@@ -60,28 +60,28 @@ def rima_ru(amount, arbs, proc, type):
             admin_fee = 7625000.00 + (amount - 500000000) * 0.0001
             arbs_fee = 3030000.00 + (amount - 500000000) * 0.0015
 
-    if type == 'Domestic':
+    if type == 'Внутренний':
 
         reg_fee = 20000.0
         comment1 = (
             "Сумма регистрационного сбора включена в сумму арбитражного сбора."
         )
 
-        # limitations on expedited procedure
-        if proc == 'Expedited' and amount >= 30000000:
+        # limitations on Expedited procedure
+        if proc == 'Ускоренная' and amount >= 30000000:
             comment0 += (
                 'Усколренная процедура применима только к спорам, где сумма тр'
                 'ебований не превышает 30 000 000 рублей. Результаты для станд'
                 'артной процедуры.'
             )
-            proc = 'Standard'
+            proc = 'Стандартная'
 
-        if proc == 'Expedited' and arbs == 3:
+        if proc == 'Ускоренная' and arbs == 3:
             if comment0:
                 comment0 += '\n'
             comment0 += (
                 'В ускоренной процедуре спор разрешается единоличным арбитром.'
-                ' Результаты для единолитчного арбитра'
+                ' Результаты для единоличного арбитра.'
             )
             arbs = 1
 
@@ -124,8 +124,8 @@ def rima_ru(amount, arbs, proc, type):
             admin_fee = 1250000.0
             arbs_fee = 8750000.0
 
-        # adjustments in expedited proc
-        if proc == 'Expedited':
+        # adjustments in Expedited proc
+        if proc == 'Ускоренная':
             if amount < 500000:
                 admin_fee *= 0.5
                 arbs_fee *= 0.75
@@ -165,7 +165,7 @@ def rspp_ru(amount, arbs, proc, type):
     '''
     comment0 = ''
 
-    if type == 'Corporate':
+    if type == 'Корпоративный':
 
         reg_fee = 30000.0
         # if parties == 3:
@@ -239,15 +239,15 @@ def rspp_ru(amount, arbs, proc, type):
         elif 50000000 < amount:
             arb_fee = 25000000 + (amount - 50000000) * 0.0012
 
-        # expedited proc affects arb_fee and reg_fee
-        if proc == 'Expedited':
-            proc = 'Standard'
+        # Expedited proc affects arb_fee and reg_fee
+        if proc == 'Ускоренная':
+            proc = 'Стандартная'
             comment0 += (
                 'Ускоренная процедура возможна только в арбитраже внутренних с'
                 'поров. Результаты для стандартной процедуры.'
             )
 
-    if type == 'domestic':
+    if type == 'Внутренний':
 
         reg_fee = 20000.0
         # if parties == 3:
@@ -320,8 +320,8 @@ def rspp_ru(amount, arbs, proc, type):
         elif 50000000 < amount:
             arb_fee = 1980000 + (amount - 50000000) * 0.001
 
-        # expedited proc affects arb_fee and reg_fee
-        if proc == 'Expedited':
+        # Expedited proc affects arb_fee and reg_fee
+        if proc == 'Ускоренная':
             arb_fee *= 0.7
             reg_fee *= 0.5
 
@@ -357,7 +357,7 @@ def icac_ru(amount, arbs, proc, type):
     comment0 = ''
     comment2 = ''
 
-    if type == 'Corporate':
+    if type == 'Корпоративный':
 
         # get rates from database
         rub_to_usd = Rate.objects.get(name='RUB_USD').rate
@@ -368,19 +368,17 @@ def icac_ru(amount, arbs, proc, type):
 
         reg_fee = 1000.0 * usd_to_rub
         comment1 = (
-            "Сумма регистрационного сбора не включена в сумму арбитражного сбо"
+            "Сумма регистрационного сбора НЕ включена в сумму арбитражного сбо"
             "ра."
         )
-
-        # limits on expedited arbitration in ICAC
-        if proc == "Expedited":
+        if proc == 'Ускоренная':
             comment0 += (
-                'Ускоренная процедура возможна только в арбитраже внутренних с'
-                'поров. Результаты для стандартной процедуры.'
+                'Правила арбитража корпоративных споров МКАС не содержат полож'
+                'ений об ускоренной процедуре. Результаты для стандартной проц'
+                'едуры.'
             )
-            proc = 'Standard'
 
-        # calculate arb_fee for both standard and expedited proc (panel of 3)
+        # calculating arb_fee (panel of 3)
         if amount < 10000:
             arb_fee = 3000
         elif 10000 <= amount < 50000:
@@ -405,9 +403,20 @@ def icac_ru(amount, arbs, proc, type):
         # back to RUB
         arb_fee *= usd_to_rub
 
-    if type == "Domestic":
+    if type == "Внутренний":
 
         reg_fee = 10000.0
+        comment1 = (
+            "Сумма регистрационного сбора не включена в сумму арбитражного сбо"
+            "ра."
+        )
+
+        if proc == 'Ускоренная':
+            comment0 += (
+                'Правила арбитража внутренних споров МКАС не содержат положени'
+                'й об ускоренной процедуре. Результаты для стандартной процеду'
+                'ры.'
+            )
 
         if amount <= 100000:
             arb_fee = 10000.0
@@ -438,17 +447,13 @@ def icac_ru(amount, arbs, proc, type):
     if arbs == 3:
         arbs_fee = 0.78 * arb_fee
         admin_fee = arb_fee - arbs_fee
-        if proc == 'Expedited':
-            comment2 += (
-                'Typically in Expedited arbitration under ICAC Rules a case is'
-                ' settled by a sole arbitrator.\nHowever, the estimation is ca'
-                'lculated for a panel of three arbitrators.'
-            )
+
 
     # formatting the results
     admin_fee = round(admin_fee, 2)
     arbs_fee = round(arbs_fee, 2)
     arb_fee = round(arb_fee, 2)
+    reg_fee = round(arb_fee, 2)
 
     # adding results to dict
     result = {
@@ -458,7 +463,6 @@ def icac_ru(amount, arbs, proc, type):
         'arb_fee': arb_fee,
         'comment0': comment0,
         'comment1': comment1,
-        'comment2': comment2
     }
 
     return result
@@ -471,7 +475,7 @@ def ai_chooser_ru(req, ais, amount, arbs, proc, type):
     for ai in ais:
         if ai.id == 1:
             res = rima_ru(amount, arbs, proc, type)
-            obj = Cost(ai=ai, req=req)
+            obj = CostRu(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
             obj.arbs_fee = res['arbs_fee']
@@ -483,7 +487,7 @@ def ai_chooser_ru(req, ais, amount, arbs, proc, type):
             result.append(obj)
         if ai.id == 2:
             res = rspp_ru(amount, arbs, proc, type)
-            obj = Cost(ai=ai, req=req)
+            obj = CostRu(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
             obj.arbs_fee = res['arbs_fee']
@@ -495,7 +499,7 @@ def ai_chooser_ru(req, ais, amount, arbs, proc, type):
             result.append(obj)
         if ai.id == 3:
             res = icac_ru(amount, arbs, proc, type)
-            obj = Cost(ai=ai, req=req)
+            obj = CostRu(ai=ai, req=req)
             obj.reg_fee = res['reg_fee']
             obj.arb_fee = res['arb_fee']
             obj.arbs_fee = res['arbs_fee']
@@ -503,7 +507,5 @@ def ai_chooser_ru(req, ais, amount, arbs, proc, type):
             if 'comment0' in res:
                 obj.comment0 = res['comment0']
             obj.comment1 = res['comment1']
-            if 'comment2' in res:
-                obj.comment2 = res['comment2']
             obj.save()
             result.append(obj)

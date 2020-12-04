@@ -46,19 +46,21 @@ class UserRequest(models.Model):
 class UserRequestRu(models.Model):
     ARBS = ((1, '1'), (3, '3'),)
     TYPE_RU = (
-        ('Domestic', 'Внутренний'),
-        ('Corporate', 'Корпоративный')
+        ('Внутренний', 'Внутренний'),
+        ('Корпоративный', 'Корпоративный')
     )
     PROC_RU = (
-        ('Standard', 'Стандартная'),
-        ('Expedited', 'Ускоренная'),
+        ('Стандартная', 'Стандартная'),
+        ('Ускоренная', 'Ускоренная'),
     )
 
     amount = models.FloatField(validators=[MinValueValidator(1)])
     arbs = models.IntegerField(choices=ARBS, default=3)
     ai = models.ManyToManyField(ArbInstRu)
-    proc = models.CharField(max_length=16, choices=PROC_RU, default='Standard')
-    type = models.CharField(max_length=16, choices=TYPE_RU, default='Domestic')
+    proc = models.CharField(
+        max_length=16, choices=PROC_RU, default='Стандартная')
+    type = models.CharField(
+        max_length=16, choices=TYPE_RU, default='Внутренний')
 
 
 class Cost(models.Model):
@@ -73,14 +75,24 @@ class Cost(models.Model):
     admin_fee = models.FloatField(null=True, blank=True)
     ea_fee = models.FloatField(null=True, blank=True)
 
-    min_arbs_fee = models.FloatField(null=True, blank=True)
-    med_arbs_fee = models.FloatField(null=True, blank=True)
-    max_arbs_fee = models.FloatField(null=True, blank=True)
+    comment0 = models.TextField(null=True, blank=True)
+    comment1 = models.TextField(null=True, blank=True)
+    comment2 = models.TextField(null=True, blank=True)
+
+
+class CostRu(models.Model):
+    ai = models.ForeignKey(ArbInstRu, on_delete=models.CASCADE)
+    req = models.ForeignKey(
+        UserRequestRu, on_delete=models.CASCADE, related_name='costs')
+
+    reg_fee = models.FloatField(null=True, blank=True)
+    arb_fee = models.FloatField(null=True, blank=True)
+    arbs_fee = models.FloatField(null=True, blank=True)
+    admin_fee = models.FloatField(null=True, blank=True)
 
     comment0 = models.TextField(null=True, blank=True)
     comment1 = models.TextField(null=True, blank=True)
     comment2 = models.TextField(null=True, blank=True)
-    comment3 = models.TextField(null=True, blank=True)
 
 
 class Rate(models.Model):

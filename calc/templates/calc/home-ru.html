@@ -1,0 +1,45 @@
+{% extends 'calc/base-ru.html' %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+
+    {% block content %}
+    <br>
+
+    <form action="{% url 'calc:home-ru' %}" method="post">
+      {% csrf_token %}
+      <div class="cntr">
+        <div class="ctr centr padding-top-15" style="margin-left: 5px; margin-right: 5px; border-radius: 4px 4px 0px 0px">
+          <h3 style="padding-bottom:0px">Калькулятор сбора</h3>
+        </div>
+      </div>
+      <div class="cntr">
+        <div class="centr padding-15" style="margin-left: 5px; margin-right: 5px;">
+          <div class="right">
+            <hr class="black">
+            {{ form.amount|as_crispy_field }}
+            {{ form.arbs|as_crispy_field }}
+          </div>
+          <div class="middle">
+            <hr class="black">
+          </div>
+          <div class="left">
+            <hr class="black">
+            {{ form.type|as_crispy_field }}
+            {{ form.proc|as_crispy_field }}
+          </div>
+        </div>
+      </div>
+      <div class="cntr">
+        <div class="centr padding-15" style="margin-left: 5px; margin-right: 5px;">
+          {{ form.ai|as_crispy_field }}
+        </div>
+      </div>
+      <div class="cntr">
+        <div class="ctr centr padding-btm-15 padding-t-5" style="margin-left: 5px; margin-right: 5px; border-radius: 0px 0px 4px 4px">
+        <input class="bttn-c" type="submit" name="Рассчитать" value="Рассчитать">
+        </div>
+      </div>
+    </form>
+
+<br>
+    {% endblock %}

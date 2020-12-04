@@ -29,7 +29,7 @@ class RequestForm(forms.ModelForm):
 class RequestFormRu(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
-        super(RequestForm, self).__init__(*args, **kwargs)
+        super(RequestFormRu, self).__init__(*args, **kwargs)
         self.fields['ai'].widget = forms.CheckboxSelectMultiple(
             choices=self.fields['ai'].choices
         )
@@ -42,9 +42,10 @@ class RequestFormRu(forms.ModelForm):
             "amount": "Сумма требований",
             "arbs": "Кол-во арбитров",
             "proc": "Вид процедуры",
-            "type": "Арбитражное учреждение",
+            "type": "Вид спора",
+            "ai": "Арбитражное учреждение",
         }
-        fields = ['amount', 'arbs', 'proc', 'ai']
+        fields = ['amount', 'arbs', 'proc', 'type', 'ai']
 
 
 # PROCEDURE = ["Standard", "Expedited"]
