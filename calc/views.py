@@ -76,7 +76,7 @@ def home_ru(request):
         form = RequestFormRu()
         context = {
             'form': form,
-            'title': 'Arbitration Calculator',
+            'title': 'Арбитражный калькулятор',
         }
         return render(request, 'calc/home-ru.html', context)
 
