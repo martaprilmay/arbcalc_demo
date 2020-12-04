@@ -164,6 +164,7 @@ def rspp_ru(amount, arbs, proc, type):
     the Russian Union of Industrialists and Entrepreneurs.
     '''
     comment0 = ''
+    comment2 = ''
 
     if type == 'Корпоративный':
 
@@ -173,9 +174,17 @@ def rspp_ru(amount, arbs, proc, type):
         # if parties == 4:
         #     reg_fee += 20000.0
         comment1 = (
-            "Сумма регистрационного сбора не включена в сумму арбитражного сбо"
+            "Сумма регистрационного сбора НЕ включена в сумму арбитражного сбо"
             "ра."
         )
+
+        if proc == 'Ускоренная':
+            comment0 += (
+                'Арбитражный регламент АЦ при РСПП не содержит положений об ус'
+                'коренной (арбитраже на основании документов) процедуре при ар'
+                'битраже корпоративного спора. Результаты для стандартной проц'
+                'едуры.'
+            )
 
         # calculate arb_fee (sole arbitrator)
         if amount <= 500000:
@@ -239,21 +248,11 @@ def rspp_ru(amount, arbs, proc, type):
         elif 50000000 < amount:
             arb_fee = 25000000 + (amount - 50000000) * 0.0012
 
-        # Expedited proc affects arb_fee and reg_fee
-        if proc == 'Ускоренная':
-            proc = 'Стандартная'
-            comment0 += (
-                'Ускоренная процедура возможна только в арбитраже внутренних с'
-                'поров. Результаты для стандартной процедуры.'
-            )
 
     if type == 'Внутренний':
 
         reg_fee = 20000.0
-        # if parties == 3:
-        #     reg_fee += 10000.0
-        # if parties == 4:
-        #     reg_fee += 20000.0
+
         comment1 = (
             "Сумма регистрационного сбора не включена в сумму арбитражного сбо"
             "ра."
@@ -324,6 +323,10 @@ def rspp_ru(amount, arbs, proc, type):
         if proc == 'Ускоренная':
             arb_fee *= 0.7
             reg_fee *= 0.5
+            comment2 += (
+                'Приведен расчет для арбитража на основании документов без проведе'
+                'ния устных слушаний'
+            )
 
     # caclulate arb_fee (if panel of three arbitrators)
     if arbs == 3:
@@ -345,8 +348,9 @@ def rspp_ru(amount, arbs, proc, type):
         'arb_fee': arb_fee,
         'arbs_fee': arbs_fee,
         'admin_fee': admin_fee,
-        'comment1': comment1,
         'comment0': comment0,
+        'comment1': comment1,
+        'comment2': comment2,
     }
 
     return result
@@ -355,7 +359,6 @@ def rspp_ru(amount, arbs, proc, type):
 def icac_ru(amount, arbs, proc, type):
 
     comment0 = ''
-    comment2 = ''
 
     if type == 'Корпоративный':
 
@@ -448,7 +451,6 @@ def icac_ru(amount, arbs, proc, type):
         arbs_fee = 0.78 * arb_fee
         admin_fee = arb_fee - arbs_fee
 
-
     # formatting the results
     admin_fee = round(admin_fee, 2)
     arbs_fee = round(arbs_fee, 2)
@@ -495,6 +497,8 @@ def ai_chooser_ru(req, ais, amount, arbs, proc, type):
             if 'comment0' in res:
                 obj.comment0 = res['comment0']
             obj.comment1 = res['comment1']
+            if 'comment0' in res:
+                obj.comment2 = res['comment2']
             obj.save()
             result.append(obj)
         if ai.id == 3:

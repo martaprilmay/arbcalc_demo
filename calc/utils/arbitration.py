@@ -1537,9 +1537,9 @@ def rspp(amount, arbs, proc, parties, measures):
 
     reg_fee = rub_to_usd * 30000.0
     if parties == 3:
-        reg_fee += rub_to_usd * 10000.0
+        reg_fee += rub_to_usd * 15000.0
     if parties == 4:
-        reg_fee += rub_to_usd * 20000.0
+        reg_fee += rub_to_usd * 30000.0
     comment1 = "The Registration fee is NOT included in the Arbitration fee."
 
     # calculate arb_fee (sole arbitrator)
