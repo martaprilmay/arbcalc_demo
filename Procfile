@@ -1,1 +1,1 @@
-web: gunicorn arbcalc.wsgi
+web: honcho start -f ProcfileHoncho

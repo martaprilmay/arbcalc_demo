@@ -1,0 +1,3 @@
+web: gunicorn arbcalc.wsgi
+worker1: celery -A arbcalc beat -l info
+worker2: celery -A arbcalc worker -l info
