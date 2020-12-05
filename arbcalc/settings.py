@@ -148,7 +148,7 @@ STATIC_URL = '/static/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-# Redis related settings
+# Heroku Redis settings
 
 REDIS_HOST = 'ec2-54-147-218-112.compute-1.amazonaws.com'
 REDIS_PORT = '25819'
@@ -159,7 +159,8 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
-# Local redis settings
+# Local Redis settings
+
 # REDIS_HOST = '0.0.0.0'
 # REDIS_PORT = '6379'
 # CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'

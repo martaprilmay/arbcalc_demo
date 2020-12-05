@@ -8,26 +8,7 @@ import json
 import ssl
 
 
-def get_rate(currency1, currency2):
-
-    key = f'{currency1}_{currency2}'
-    url = (
-        f'https://free.currconv.com/api/v7/convert?q={key}'
-        f'&compact=ultra&apiKey=6cf91d64550051a2b8e1'
-    )
-    context = ssl._create_unverified_context()
-    response = urllib.request.urlopen(url, context=context)
-    str_rate = response.read().decode()
-    jsrate = json.loads(str_rate)
-
-    rate = jsrate[key]
-
-    rt = Rate.objects.get(name=key)
-
-    rt.rate = rate
-
-
-def get_rate2(currency):
+def get_rate(currency):
 
     exch1 = f'USD_{currency}'
     exch2 = f'{currency}_USD'
@@ -44,12 +25,7 @@ def get_rate2(currency):
     rt1.rate = rate1
     rt1.save()
 
-    url2 = f'https://api.exchangeratesapi.io/latest?base={currency}'
-    response2 = urllib.request.urlopen(url2, context=context)
-    str_rate2 = response2.read().decode()
-    jsrate2 = json.loads(str_rate2)
-
-    rate2 = jsrate2['rates']['USD']
+    rate2 = 1 / rate1
 
     rt2 = Rate.objects.get(name=exch2)
     rt2.rate = rate2
@@ -59,20 +35,9 @@ def get_rate2(currency):
 @shared_task
 def get_rates():
 
-    get_rate2('EUR')
-    get_rate2('RUB')
-    get_rate2('CNY')
-    get_rate2('HKD')
-    get_rate2('SGD')
-    get_rate2('KRW')
-
-    # get_rate('USD', 'EUR')
-    # get_rate('EUR', 'USD')
-    # get_rate('RUB', 'USD')
-    # get_rate('USD', 'RUB')
-    # get_rate('USD', 'CNY')
-    # get_rate('CNY', 'USD')
-    # get_rate('USD', 'HKD')
-    # get_rate('HKD', 'USD')
-    # get_rate('SGD', 'USD')
-    # get_rate('USD', 'SGD')
+    get_rate('EUR')
+    get_rate('RUB')
+    get_rate('CNY')
+    get_rate('HKD')
+    get_rate('SGD')
+    get_rate('KRW')

@@ -21,10 +21,10 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 #                 CELERY_RESULT_BACKEND=os.environ['REDIS_URL'])
 
 app.conf.beat_schedule = {
-    'hourly-rates-update': {
+    'every4h-rates-update': {
         'task': 'calc.tasks.get_rates',
         # every hour
-        'schedule': crontab(minute=0),
+        'schedule': crontab(minute=0, hour="*/4"),
     }
 }
 
