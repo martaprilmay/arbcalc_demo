@@ -965,6 +965,10 @@ def dis(amount, arbs, proc, parties, measures):
         arb2 = arb3 = 454450.00
         arb1 = 1.3 * arb2
 
+    # max admin_fee
+    if admin_fee > 40000:
+        admin_fee = 40000.0
+
     # calculating arbs_fee
     if arbs == 1:
         arbs_fee = arb1
@@ -1237,6 +1241,7 @@ def kcab(amount, arbs, proc, measures):
     med_arbs_fee = round(med_arbs_fee, 2)
     max_arbs_fee = round(max_arbs_fee, 2)
     admin_fee = round(admin_fee, 2)
+    reg_fee = round(reg_fee, 2)
     arb_fee = round(arb_fee, 2)
     ea_fee = round(ea_fee, 2)
 
@@ -1600,9 +1605,9 @@ def rspp(amount, arbs, proc, parties, measures):
     elif 200000000 < amount <= 300000000:
         arb_fee = 2100000
     elif 300000000 < amount <= 500000000:
-        arb_fee = 25000000
-    elif 50000000 < amount:
-        arb_fee = 25000000 + (amount - 50000000) * 0.0012
+        arb_fee = 2500000
+    elif 500000000 < amount:
+        arb_fee = 2500000 + (amount - 500000000) * 0.0012
 
     # expedited proc affects arb_fee
     if proc == 'Expedited':
