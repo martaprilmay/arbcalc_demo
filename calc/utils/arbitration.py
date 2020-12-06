@@ -109,8 +109,8 @@ def rac_at_rima(amount, arbs, proc, measures):
 
 def scc(amount, arbs, proc, measures):
     '''
-    Calculates fees for international arbitration in the ICC International
-    Court of Arbitration.
+    Calculates fees for international arbitration in the Arbitration Institute
+    of the Stockholm Chamber of Commerce.
     '''
 
     # getting rates from database
@@ -506,7 +506,7 @@ def icc(amount, arbs, proc, measures):
         f"Arbitrators fee is determined by the ICC Court.\n The estimation abo"
         f"ve is based upon Median Arbitrators fee.\n Minimum Arbitrators fee i"
         f"n this case is {min_arbs_fee}.\n Maximum Arbitrators fee in this cas"
-        f"e is {max_arbs_fee}.\n"
+        f"e is {max_arbs_fee}."
     )
 
     # emergency measures
