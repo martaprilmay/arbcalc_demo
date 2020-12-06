@@ -668,7 +668,7 @@ def siac(amount, arbs, proc, measures):
     reg_fee = 2000.00 * sgd_to_usd
     comment1 = (
         'The Registration fee is NOT included in the Arbitration fee.\nFor Sin'
-        'gapore parties the registration (filling) fee is SGD 2 140.'
+        'gapore parties the registration (filling) fee is SGD 2140.0.'
     )
     comment0 = ''
 
