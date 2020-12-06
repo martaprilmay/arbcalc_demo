@@ -609,16 +609,20 @@ def hkiac(amount, arbs, proc, measures):
     if arbs == 3:
         arbs_fee *= 3
 
+    comment2 = (
+        'The estimation is based on Maximun Arbitrators fee as there are no ru'
+        'les to calculate Median Arbitrators fee.'
+    )
+
     # emergency measures
     ea_fee = 0
-    comment2 = ''
     if measures == 'Yes':
         ea_fee = 200000 * hkd_to_usd
         in_USD = 250000 * hkd_to_usd
         in_USD = round(in_USD, 2)
         comment2 += (
-            f'Emergency arbitrator proceedings also require an application dep'
-            f'osit of {in_USD} USD.'
+            f'\nEmergency arbitrator proceedings also require an application d'
+            f'eposit of {in_USD} USD.'
         )
 
     # converting results
@@ -720,6 +724,11 @@ def siac(amount, arbs, proc, measures):
     if arbs == 3:
         arbs_fee *= 3
 
+    comment2 = (
+        'The estimation is based on Maximun Arbitrators fee as there are no ru'
+        'les to calculate Median Arbitrators fee.'
+    )
+
     # emergency measures
     ea_fee = 0
     if measures == 'Yes':
@@ -745,8 +754,10 @@ def siac(amount, arbs, proc, measures):
         'arbs_fee': arbs_fee,
         'admin_fee': admin_fee,
         'ea_fee': ea_fee,
+        'comment0': comment0,
         'comment1': comment1,
-        'comment0': comment0
+        'comment2': comment2,
+
     }
 
     return result
@@ -1704,8 +1715,7 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
             obj.comment1 = res['comment1']
             if 'comment0' in res:
                 obj.comment0 = res['comment0']
-            if res['comment2']:
-                obj.comment2 = res['comment2']
+            obj.comment2 = res['comment2']
             obj.save()
             result.append(obj)
         if ai.id == 3:
@@ -1719,9 +1729,10 @@ def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
                 obj.ea_fee = res['ea_fee']
             else:
                 obj.ea_fee = 0
-            obj.comment1 = res['comment1']
             if 'comment0' in res:
                 obj.comment0 = res['comment0']
+            obj.comment1 = res['comment1']
+            obj.comment2 = res['comment2']
             obj.save()
             result.append(obj)
         elif ai.id == 4:
