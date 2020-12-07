@@ -351,7 +351,7 @@ def bar_chart(request):
     # creating bar
     ind = [x for x, _ in enumerate(ai)]
     plt.bar(
-        ind, ea_fee, width=0.8, label='Emergency Mesures',
+        ind, ea_fee, width=0.8, label='Emergency Measures',
         color='#d9c1c1', bottom=arbs_fee+admin_fee
     )
     plt.bar(
