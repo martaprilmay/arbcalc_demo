@@ -1492,15 +1492,15 @@ def icac(amount, arbs, proc, measures):
     elif amount > 10000000:
         arb_fee = 90500 + (amount - 10000000) * 0.0014
 
-    # calculate arb, arbs and admin fee (sole arbitrator)
+    # calculate arb, arbs and admin fee (solo)
     if arbs == 1:
         arb_fee *= 0.8
-        arbs_fee = 0.72 * arb_fee
+        arbs_fee = 0.4 * arb_fee * 0.72
         admin_fee = arb_fee - arbs_fee
 
-    # calculate arbs and admin fee (panel of three arbitrators)
+    # calculate arb, arbs and admin fee (panel of three)
     if arbs == 3:
-        arbs_fee = 0.78 * arb_fee
+        arbs_fee = 0.4 * arb_fee * 0.78
         admin_fee = arb_fee - arbs_fee
         if proc == 'Expedited':
             comment2 += (
