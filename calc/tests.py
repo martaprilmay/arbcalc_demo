@@ -24,27 +24,16 @@ class CalcTestCase(TestCase):
         # Rate.objects.create(name='KRW_USD', rate=1)
         # Rate.objects.create(name='USD_KRW', rate=1)
 
-        # Create ArbInsts
+        # Create ArbInsts object
         rac = ArbInst.objects.create(arb_inst='RAC (Russia)')
-        # ArbInst.objects.create(name='HKIAC (China)')
-        # ArbInst.objects.create(name='SIAC (Singapore)')
-        # ArbInst.objects.create(name='SCC (Sweden)')
-        # ArbInst.objects.create(name='ICC (France)')
-        # ArbInst.objects.create(name='RSPP (Russia)')
-        # ArbInst.objects.create(name='ICAC (Russia)')
-        # ArbInst.objects.create(name='DIS (Germany)')
-        # ArbInst.objects.create(name='CIETAC (China)')
-        # ArbInst.objects.create(name='VIAC (Austria)')
-        # ArbInst.objects.create(name='AIAC (Malaysia)')
-        # ArbInst.objects.create(name='KCAB (South Korea)')
 
-        # Create UserRequest
+        # Create UserRequest object
         ur1 = UserRequest.objects.create(
             amount=1000000, arbs=3, parties=2, proc='Standard', ea='No')
         ur1.ai.add(rac)
 
     def test_home(self):
-        rac = (ArbInst.objects.get(pk=1),)
+        '''Home page redirects to results page if valid data was submitted.'''
         c = Client()
         response = c.post(
             '', {
@@ -53,21 +42,76 @@ class CalcTestCase(TestCase):
                 'parties': 2,
                 'proc': 'Standard',
                 'ea': 'No',
-                'ai': rac,
+                'ai': [1],
             })
 
-        req = UserRequest.objects.get(pk=1)
-
-        # test redirect
+        # test redirect to results page
         self.assertEqual(response.status_code, 302)
+
+    def test_home_invalid(self):
+        '''Home page reloads with error msgs if invalid data was submitted.'''
+        c = Client()
+        response = c.post(
+            '', {
+                'amount': -1,
+                'arbs': -1,
+                'parties': -9,
+                'proc': -1,
+                'ea': -1,
+                'ai': -1,
+            })
+
+        # No redirect to results page
+        self.assertEqual(response.status_code, 200)
+        # New UserRequest object was not created
+        self.assertEqual(UserRequest.objects.all().count(), 1)
+        # Error messages are displayed
+        self.assertTrue(
+            'Ensure this value is greater than or equal to 1' in
+            str(response.content))
+        self.assertTrue('Select a valid choice' in str(response.content))
+
+    def test_home_userrequest_object(self):
+        '''UserRequest object is created with post data.'''
+        c = Client()
+        c.post(
+            '', {
+                'amount': 1000000,
+                'arbs': 3,
+                'parties': 2,
+                'proc': 'Standard',
+                'ea': 'No',
+                'ai': [1],
+            })
+
+        req = UserRequest.objects.get(pk=2)
+        rac = ArbInst.objects.get(pk=1)
+
         # test UserRequest object creation
+        self.assertEqual(UserRequest.objects.all().count(), 2)
         self.assertEqual(req.amount, 1000000)
         self.assertEqual(req.arbs, 3)
         self.assertEqual(req.parties, 2)
         self.assertEqual(req.proc, 'Standard')
         self.assertEqual(req.ea, 'No')
-        self.assertEqual(req.ai, 'RAC (Russia)')
-        # test ai chooser
+        self.assertEqual(req.ai.first(), rac)
+
+    def test_home_userrequest_costs(self):
+        '''Cost object is created with correct data.'''
+        c = Client()
+        c.post(
+            '', {
+                'amount': 1000000,
+                'arbs': 3,
+                'parties': 2,
+                'proc': 'Standard',
+                'ea': 'No',
+                'ai': [1],
+            })
+
+        req = UserRequest.objects.get(pk=2)
+
+        # test ai chooser and Cost object
         self.assertEqual(req.costs.count(), 1)
         self.assertEqual(req.costs.first().arb_fee, 38700.0)
         self.assertEqual(req.costs.first().arbs_fee, 29600.0)
@@ -97,18 +141,8 @@ class CalcTestCase(TestCase):
         self.assertEqual(response.context['result'][0].reg_fee, 500.0)
 
     def test_results_redirect(self):
-        '''The Result page redirects if no last_id in session'''
+        '''The Result page redirects to home page if no last_id in session.'''
         c = Client()
         response = c.get('/results')
 
         self.assertEqual(response.status_code, 302)
-
-    def test_about(self):
-        c = Client()
-        response = c.get('/about')
-        self.assertEqual(response.status_code, 200)
-
-    def test_home(self):
-        c = Client()
-        response = c.get('')
-        self.assertEqual(response.status_code, 200)

@@ -18,7 +18,6 @@ from .tasks import get_rates
 
 
 def home(request):
-
     '''Home page with Calculator UI'''
 
     if request.method == 'POST':
