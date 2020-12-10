@@ -8,13 +8,13 @@ import xlsxwriter as xw
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from .tasks import get_rates
 
 # Local imports
 from .forms import RequestForm, RequestFormRu
 from .models import UserRequest, UserRequestRu
 from .utils.arbitration import ai_chooser
 from .utils.arbitration_ru import ai_chooser_ru
+from .tasks import get_rates
 
 
 def home(request):
@@ -82,7 +82,7 @@ def home_ru(request):
 
 
 def result(request):
-    ''' Page with results for user's request'''
+    '''Results for user's request.'''
     if 'last_id' in request.session:
         last_id = request.session['last_id']
         req = UserRequest.objects.get(pk=last_id)

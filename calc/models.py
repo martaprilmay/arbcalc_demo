@@ -62,6 +62,9 @@ class UserRequestRu(models.Model):
     type = models.CharField(
         max_length=16, choices=TYPE_RU, default='Внутренний')
 
+    def __str__(self):
+        return f'Request N{self.id} for {self.amount}'
+
 
 class Cost(models.Model):
 
