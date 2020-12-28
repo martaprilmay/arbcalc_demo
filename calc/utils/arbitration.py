@@ -2,35 +2,30 @@ from calc.models import Cost, Rate
 
 
 def rac_at_rima(amount, arbs, proc, measures):
-    '''
-    Calculates fees for international arbitration in the Russian Arbitration
-    Center at the Russian Institute of Modern Arbitration.
-    '''
-
+    """ Calculates fees for international arbitration in the Russian Arbitration
+        Center at the Russian Institute of Modern Arbitration
+    """
     reg_fee = 500.0
     comment1 = 'The Registration fee is included in the Arbitration fee.'
-
-    admin_fee = 0
-    arbs_fee = 0
     comment0 = ''
 
     # limitations on expedited procedure
-    if proc == 'Expedited' and amount >= 500000:
-        comment0 += (
-            'Expedited arbitration only allowed under USD 500 000 under RAC Ru'
-            'les.\nType of arbitration was changed to "Standard".'
-        )
-        proc = 'Standard'
-
-    if proc == 'Expedited' and arbs == 3:
-        if comment0:
-            comment0 += '\n'
-        comment0 += (
-            'A case is settled by a sole arbitrator in an expedited arbitratio'
-            'n under RAC Rules.\nThe following estimation is for a sole arbitr'
-            'ator.'
-        )
-        arbs = 1
+    if proc == 'Expedited':
+        if amount >= 500000:
+            comment0 += (
+                'Expedited arbitration only allowed under USD 500 000 under RAC Ru'
+                'les.\nType of arbitration was changed to "Standard".'
+            )
+            proc = 'Standard'
+        if arbs == 3:
+            if comment0:
+                comment0 += '\n'
+            comment0 += (
+                'A case is settled by a sole arbitrator in an expedited arbitratio'
+                'n under RAC Rules.\nThe following estimation is for a sole arbitr'
+                'ator.'
+            )
+            arbs = 1
 
     # calculating admin and arbs fee (sole arb before 500 000, then 3 arbs)
     # standard procedure
@@ -108,10 +103,9 @@ def rac_at_rima(amount, arbs, proc, measures):
 
 
 def scc(amount, arbs, proc, measures):
-    '''
-    Calculates fees for international arbitration in the Arbitration Institute
-    of the Stockholm Chamber of Commerce.
-    '''
+    """ Calculates fees for international arbitration in the Arbitration Institute
+        of the Stockholm Chamber of Commerce
+    """
 
     # getting rates from database
     usd_to_eur = Rate.objects.get(name='USD_EUR').rate
@@ -314,11 +308,9 @@ def scc(amount, arbs, proc, measures):
 
 
 def icc(amount, arbs, proc, measures):
-    '''
-    Calculates fees for international arbitration in the ICC International
-    Court of Arbitration.
-    '''
-
+    """ Calculates fees for international arbitration in the ICC International
+        Court of Arbitration.
+    """
     reg_fee = 5000.00
     comment1 = "The Registration fee is included in the Arbitration fee."
     comment0 = ''
@@ -537,10 +529,9 @@ def icc(amount, arbs, proc, measures):
 
 
 def hkiac(amount, arbs, proc, measures):
-    '''
-    Calculates fees for international arbitration in the the Hong Kong
-    International Arbitration Centre
-    '''
+    """ Calculates fees for international arbitration in the the Hong Kong
+        International Arbitration Centre
+    """
 
     # getting rates from database
     usd_to_hkd = Rate.objects.get(name='USD_HKD').rate
@@ -653,18 +644,15 @@ def hkiac(amount, arbs, proc, measures):
 
 
 def siac(amount, arbs, proc, measures):
-    '''
-    Calculates fees for international arbitration in the the Singapore
-    International Arbitral Centre.
-    '''
-
+    """ Calculates fees for international arbitration in the the Singapore
+        International Arbitral Centre
+    """
     # getting rates from database
     sgd_to_usd = Rate.objects.get(name='SGD_USD').rate
     usd_to_sgd = Rate.objects.get(name='USD_SGD').rate
 
     # converting amount
     amount *= usd_to_sgd
-
     reg_fee = 2000.00 * sgd_to_usd
     comment1 = (
         'The Registration fee is NOT included in the Arbitration fee.\nFor Sin'
@@ -763,11 +751,10 @@ def siac(amount, arbs, proc, measures):
     return result
 
 
-def viac(amount, arbs, proc, measures):
-    '''
-    Calculates fees for international arbitration in the the Vienna
-    International Arbitral Centre.
-    '''
+def viac(amount, arbs, measures):
+    """ Calculates fees for international arbitration in the the Vienna
+        International Arbitral Centre.
+    """
 
     # getting rates from database
     usd_to_eur = Rate.objects.get(name='USD_EUR').rate
@@ -857,7 +844,7 @@ def viac(amount, arbs, proc, measures):
     )
 
     # no emergency measures in VIAC
-    no_ea = 1
+    ea_fee = 0
     comment0 = ''
     if measures == 'Yes':
         comment0 = (
@@ -882,7 +869,7 @@ def viac(amount, arbs, proc, measures):
         'arb_fee': arb_fee,
         'arbs_fee': arbs_fee,
         'admin_fee': admin_fee,
-        'no_ea': no_ea,
+        'ea_fee': ea_fee,
         'comment0': comment0,
         'comment1': comment1,
         'comment2': comment2,
@@ -891,12 +878,10 @@ def viac(amount, arbs, proc, measures):
     return result
 
 
-def dis(amount, arbs, proc, parties, measures):
-    '''
-    Calculates fees for international arbitration in the the German Arbitration
-    Institute (DIS)
-    '''
-
+def dis(amount, arbs, parties, measures):
+    """ Calculates fees for international arbitration in the the German Arbitration
+        Institute (DIS)
+    """
     # get rates from database
     usd_to_eur = Rate.objects.get(name='USD_EUR').rate
     eur_to_usd = Rate.objects.get(name='EUR_USD').rate
@@ -997,7 +982,7 @@ def dis(amount, arbs, proc, parties, measures):
         admin_fee *= 1.2
 
     # no emergency measures in dis
-    no_ea = 1
+    ea_fee = 0
     comment0 = ''
     if measures == 'Yes':
         comment0 = (
@@ -1024,7 +1009,7 @@ def dis(amount, arbs, proc, parties, measures):
         'admin_fee': admin_fee,
         'arbs_fee': arbs_fee,
         'arb_fee': arb_fee,
-        'no_ea': no_ea,
+        'ea_fee': ea_fee,
         'comment0': comment0,
         'comment1': comment1
     }
@@ -1033,10 +1018,9 @@ def dis(amount, arbs, proc, parties, measures):
 
 
 def aiac(amount, arbs, proc, measures):
-    '''
-    Calculates fees for international arbitration in the the Asian
-    International Arbitration Centre.
-    '''
+    """ Calculates fees for international arbitration in the the Asian
+        International Arbitration Centre
+    """
     reg_fee = 2000.00
     comment1 = 'The Registration fee is NOT included in the Arbitration fee.'
 
@@ -1144,12 +1128,10 @@ def aiac(amount, arbs, proc, measures):
 
 
 def kcab(amount, arbs, proc, measures):
-    '''
-    Calculates fees for international arbitration in the International
-    Commercial Arbitration Court at the Chamber of Commerce and Industry
-    of the Russian Federation.
-    '''
-
+    """ Calculates fees for international arbitration in the International
+        Commercial Arbitration Court at the Chamber of Commerce and Industry
+        of the Russian Federation
+    """
     # get rates from database
     krw_to_usd = Rate.objects.get(name='KRW_USD').rate
     usd_to_krw = Rate.objects.get(name='USD_KRW').rate
@@ -1278,17 +1260,18 @@ def kcab(amount, arbs, proc, measures):
     return result
 
 
-def cietac(amount, arbs, proc, measures):
+def cietac(amount, arbs, measures):
+    """ Calculates fees for international arbitration in the China
+        International Economic and Trade Arbitration Commission (CIETAC)
+    """
 
     # chinese branch
-
     # getting rates from Database
     usd_to_rmb = Rate.objects.get(name='USD_CNY').rate
     rmb_to_usd = Rate.objects.get(name='CNY_USD').rate
 
     # converting amount to CNY
     amount_c = amount * usd_to_rmb
-
     reg_fee_c = rmb_to_usd * 10000
 
     # calculating admin_fee and arbs_fee depending on amount
@@ -1327,14 +1310,12 @@ def cietac(amount, arbs, proc, measures):
     ea_fee_c *= rmb_to_usd
 
     # Hong-Kong branch
-
     # getting rates from Database
     usd_to_hkd = Rate.objects.get(name='USD_HKD').rate
     hkd_to_usd = Rate.objects.get(name='HKD_USD').rate
 
     # converting amount to HKD
     amount *= usd_to_hkd
-
     reg_fee = hkd_to_usd * 8000.00
     comment1 = 'The Registration fee is NOT included in the Arbitration fee'
 
@@ -1451,12 +1432,10 @@ def cietac(amount, arbs, proc, measures):
 
 
 def icac(amount, arbs, proc, measures):
-    '''
-    Calculates fees for international arbitration in the International
-    Commercial Arbitration Court at the Chamber of Commerce and Industry
-    of the Russian Federation.
-    '''
-
+    """ Calculates fees for international arbitration in the International
+        Commercial Arbitration Court at the Chamber of Commerce and Industry
+        of the Russian Federation
+    """
     reg_fee = 1000.0
     comment1 = "The Registration fee is NOT included in the Arbitration fee."
     comment0 = ''
@@ -1510,7 +1489,7 @@ def icac(amount, arbs, proc, measures):
             )
 
     # no emergency measures in ICAC
-    no_ea = 1
+    ea_fee = 0
     if measures == 'Yes':
         if comment0:
             comment0 += '\n'
@@ -1530,7 +1509,7 @@ def icac(amount, arbs, proc, measures):
         'admin_fee': admin_fee,
         'arbs_fee': arbs_fee,
         'arb_fee': arb_fee,
-        'no_ea': no_ea,
+        'ea_fee': ea_fee,
         'comment0': comment0,
         'comment1': comment1,
         'comment2': comment2
@@ -1540,10 +1519,9 @@ def icac(amount, arbs, proc, measures):
 
 
 def rspp(amount, arbs, proc, parties, measures):
-    '''
-    Calculates fees for international arbitration in the Arbitration Centre at
-    the Russian Union of Industrialists and Entrepreneurs.
-    '''
+    """ Calculates fees for international arbitration in the Arbitration Centre at
+        the Russian Union of Industrialists and Entrepreneurs
+    """
     # get rates from database
     rub_to_usd = Rate.objects.get(name='RUB_USD').rate
     usd_to_rub = Rate.objects.get(name='USD_RUB').rate
@@ -1657,7 +1635,7 @@ def rspp(amount, arbs, proc, parties, measures):
     )
 
     # No emergency proceedings in RSPP
-    no_ea = 1
+    ea_fee = 0
     comment0 = ''
     if measures == 'Yes':
         comment0 += (
@@ -1671,7 +1649,7 @@ def rspp(amount, arbs, proc, parties, measures):
         'arb_fee': arb_fee15,
         'arbs_fee': arbs_fee15,
         'admin_fee': admin_fee15,
-        'no_ea': no_ea,
+        'ea_fee': ea_fee,
         'comment1': comment1,
         'comment2': comment2,
         'comment0': comment0
@@ -1681,197 +1659,48 @@ def rspp(amount, arbs, proc, parties, measures):
 
 
 def ai_chooser(req, ais, amount, arbs, proc, parties, measures):
-
+    """ Calls ai function for each Arbitral institution in UserRequest and
+        collects results in a list of Cost objects
+    """
     result = []
-
     for ai in ais:
         if ai.id == 1:
             res = rac_at_rima(amount, arbs, proc, measures)
-            obj = Cost(ai=ai, req=req)
-            obj.reg_fee = res['reg_fee']
-            obj.arb_fee = res['arb_fee']
-            obj.arbs_fee = res['arbs_fee']
-            obj.admin_fee = res['admin_fee']
-            if res['ea_fee']:
-                obj.ea_fee = res['ea_fee']
-            else:
-                obj.ea_fee = 0
-            obj.comment1 = res['comment1']
-            if 'comment0' in res:
-                obj.comment0 = res['comment0']
-            obj.save()
-            result.append(obj)
-        if ai.id == 2:
+        elif ai.id == 2:
             res = hkiac(amount, arbs, proc, measures)
-            obj = Cost(ai=ai, req=req)
-            obj.reg_fee = res['reg_fee']
-            obj.arb_fee = res['arb_fee']
-            obj.arbs_fee = res['arbs_fee']
-            obj.admin_fee = res['admin_fee']
-            if res['ea_fee']:
-                obj.ea_fee = res['ea_fee']
-            else:
-                obj.ea_fee = 0
-            obj.comment1 = res['comment1']
-            if 'comment0' in res:
-                obj.comment0 = res['comment0']
-            obj.comment2 = res['comment2']
-            obj.save()
-            result.append(obj)
-        if ai.id == 3:
+        elif ai.id == 3:
             res = siac(amount, arbs, proc, measures)
-            obj = Cost(ai=ai, req=req)
-            obj.reg_fee = res['reg_fee']
-            obj.arb_fee = res['arb_fee']
-            obj.arbs_fee = res['arbs_fee']
-            obj.admin_fee = res['admin_fee']
-            if res['ea_fee']:
-                obj.ea_fee = res['ea_fee']
-            else:
-                obj.ea_fee = 0
-            if 'comment0' in res:
-                obj.comment0 = res['comment0']
-            obj.comment1 = res['comment1']
-            obj.comment2 = res['comment2']
-            obj.save()
-            result.append(obj)
         elif ai.id == 4:
             res = scc(amount, arbs, proc, measures)
-            obj = Cost(ai=ai, req=req)
-            obj.reg_fee = res['reg_fee']
-            obj.arb_fee = res['arb_fee']
-            obj.arbs_fee = res['arbs_fee']
-            obj.admin_fee = res['admin_fee']
-            if res['ea_fee']:
-                obj.ea_fee = res['ea_fee']
-            else:
-                obj.ea_fee = 0
-            obj.comment1 = res['comment1']
-            obj.comment2 = res['comment2']
-            if 'comment0' in res:
-                obj.comment0 = res['comment0']
-            obj.save()
-            result.append(obj)
         elif ai.id == 5:
             res = icc(amount, arbs, proc, measures)
-            obj = Cost(ai=ai, req=req)
-            obj.reg_fee = res['reg_fee']
-            obj.arb_fee = res['arb_fee']
-            obj.arbs_fee = res['arbs_fee']
-            obj.admin_fee = res['admin_fee']
-            if res['ea_fee']:
-                obj.ea_fee = res['ea_fee']
-            else:
-                obj.ea_fee = 0
-            obj.comment1 = res['comment1']
-            obj.comment2 = res['comment2']
-            if 'comment0' in res:
-                obj.comment0 = res['comment0']
-            obj.save()
-            result.append(obj)
         elif ai.id == 6:
             res = rspp(amount, arbs, proc, parties, measures)
-            obj = Cost(ai=ai, req=req)
-            obj.reg_fee = res['reg_fee']
-            obj.arb_fee = res['arb_fee']
-            obj.arbs_fee = res['arbs_fee']
-            obj.admin_fee = res['admin_fee']
-            if res['no_ea'] == 1:
-                obj.ea_fee = 0
-            obj.comment1 = res['comment1']
-            obj.comment2 = res['comment2']
-            if 'comment0' in res:
-                obj.comment0 = res['comment0']
-            obj.save()
-            result.append(obj)
         elif ai.id == 7:
             res = icac(amount, arbs, proc, measures)
-            obj = Cost(ai=ai, req=req)
-            obj.reg_fee = res['reg_fee']
-            obj.arb_fee = res['arb_fee']
-            obj.arbs_fee = res['arbs_fee']
-            obj.admin_fee = res['admin_fee']
-            if res['no_ea'] == 1:
-                obj.ea_fee = 0
-            obj.comment1 = res['comment1']
-            obj.comment2 = res['comment2']
-            if 'comment0' in res:
-                obj.comment0 = res['comment0']
-            obj.save()
-            result.append(obj)
         elif ai.id == 8:
-            res = dis(amount, arbs, proc, parties, measures)
-            obj = Cost(ai=ai, req=req)
-            obj.reg_fee = res['reg_fee']
-            obj.arb_fee = res['arb_fee']
-            obj.arbs_fee = res['arbs_fee']
-            obj.admin_fee = res['admin_fee']
-            if res['no_ea'] == 1:
-                obj.ea_fee = 0
-            if res['comment0']:
-                obj.comment0 = res['comment0']
-            obj.comment1 = res['comment1']
-            obj.save()
-            result.append(obj)
+            res = dis(amount, arbs, parties, measures)
         elif ai.id == 9:
-            res = cietac(amount, arbs, proc, measures)
-            obj = Cost(ai=ai, req=req)
-            obj.reg_fee = res['reg_fee']
-            obj.arb_fee = res['arb_fee']
-            obj.arbs_fee = res['arbs_fee']
-            obj.admin_fee = res['admin_fee']
-            if res['ea_fee']:
-                obj.ea_fee = res['ea_fee']
-            else:
-                obj.ea_fee = 0
-            obj.comment1 = res['comment1']
-            obj.comment2 = res['comment2']
-            obj.save()
-            result.append(obj)
+            res = cietac(amount, arbs, measures)
         elif ai.id == 10:
-            res = viac(amount, arbs, proc, measures)
-            obj = Cost(ai=ai, req=req)
-            obj.reg_fee = res['reg_fee']
-            obj.arb_fee = res['arb_fee']
-            obj.arbs_fee = res['arbs_fee']
-            obj.admin_fee = res['admin_fee']
-            if res['no_ea'] == 1:
-                obj.ea_fee = 0
-            if res['comment0']:
-                obj.comment0 = res['comment0']
-            obj.comment1 = res['comment1']
-            obj.comment2 = res['comment2']
-            obj.save()
-            result.append(obj)
+            res = viac(amount, arbs, measures)
         elif ai.id == 11:
             res = aiac(amount, arbs, proc, measures)
-            obj = Cost(ai=ai, req=req)
-            obj.reg_fee = res['reg_fee']
-            obj.arb_fee = res['arb_fee']
-            obj.arbs_fee = res['arbs_fee']
-            obj.admin_fee = res['admin_fee']
-            if res['ea_fee']:
-                obj.ea_fee = res['ea_fee']
-            else:
-                obj.ea_fee = 0
-            obj.comment1 = res['comment1']
-            obj.save()
-            result.append(obj)
         elif ai.id == 12:
             res = kcab(amount, arbs, proc, measures)
-            obj = Cost(ai=ai, req=req)
-            obj.reg_fee = res['reg_fee']
-            obj.arb_fee = res['arb_fee']
-            obj.arbs_fee = res['arbs_fee']
-            obj.admin_fee = res['admin_fee']
-            if res['ea_fee']:
-                obj.ea_fee = res['ea_fee']
-            else:
-                obj.ea_fee = 0
-            obj.comment1 = res['comment1']
-            obj.comment2 = res['comment2']
-            if 'comment0' in res:
-                obj.comment0 = res['comment0']
-            obj.save()
-            result.append(obj)
+
+        obj = Cost(ai=ai, req=req)
+        obj.reg_fee = res['reg_fee']
+        obj.arb_fee = res['arb_fee']
+        obj.arbs_fee = res['arbs_fee']
+        obj.admin_fee = res['admin_fee']
+        obj.ea_fee = res['ea_fee']
+        if 'comment0' in res:
+            obj.comment0 = res['comment0']
+        obj.comment1 = res['comment1']
+        if 'comment2' in res:
+            obj.comment0 = res['comment2']
+        obj.save()
+        result.append(obj)
+
     return result

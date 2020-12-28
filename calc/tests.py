@@ -15,14 +15,6 @@ class CalcTestCase(TestCase):
         Rate.objects.create(name='EUR_USD', rate=1)
         Rate.objects.create(name='RUB_USD', rate=1)
         Rate.objects.create(name='USD_RUB', rate=1)
-        # Rate.objects.create(name='USD_CNY', rate=1)
-        # Rate.objects.create(name='CNY_USD', rate=1)
-        # Rate.objects.create(name='USD_HKD', rate=1)
-        # Rate.objects.create(name='HKD_USD', rate=1)
-        # Rate.objects.create(name='SGD_USD', rate=1)
-        # Rate.objects.create(name='USD_SGD', rate=1)
-        # Rate.objects.create(name='KRW_USD', rate=1)
-        # Rate.objects.create(name='USD_KRW', rate=1)
 
         # Create ArbInsts object
         rac = ArbInst.objects.create(arb_inst='RAC (Russia)')
@@ -33,7 +25,7 @@ class CalcTestCase(TestCase):
         ur1.ai.add(rac)
 
     def test_home(self):
-        '''Home page redirects to results page if valid data was submitted.'''
+        """ Checks that Home page redirects to Results page if valid data was submitted """
         c = Client()
         response = c.post(
             '', {
@@ -49,7 +41,7 @@ class CalcTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_home_invalid(self):
-        '''Home page reloads with error msgs if invalid data was submitted.'''
+        """ Checks that Home page reloads with error msgs if invalid data was submitted """
         c = Client()
         response = c.post(
             '', {
@@ -72,7 +64,7 @@ class CalcTestCase(TestCase):
         self.assertTrue('Select a valid choice' in str(response.content))
 
     def test_home_userrequest_object(self):
-        '''UserRequest object is created with post data.'''
+        """ Checks that UserRequest object is created with post data """
         c = Client()
         c.post(
             '', {
@@ -97,7 +89,7 @@ class CalcTestCase(TestCase):
         self.assertEqual(req.ai.first(), rac)
 
     def test_home_userrequest_costs(self):
-        '''Cost object is created with correct data.'''
+        """ Checks that Cost object is created with correct data """
         c = Client()
         c.post(
             '', {
@@ -119,7 +111,7 @@ class CalcTestCase(TestCase):
         self.assertEqual(req.costs.first().reg_fee, 500.0)
 
     def test_results(self):
-        '''The Results page shows correct results if last_id is in session.'''
+        """ The Results page shows correct results if last_id is in session """
         # Create Cost object
         ur1 = UserRequest.objects.get(pk=1)
         rac = (ArbInst.objects.get(pk=1),)
@@ -141,7 +133,7 @@ class CalcTestCase(TestCase):
         self.assertEqual(response.context['result'][0].reg_fee, 500.0)
 
     def test_results_redirect(self):
-        '''The Result page redirects to home page if no last_id in session.'''
+        """ Checks that Result page redirects to Home page if no last_id in session """
         c = Client()
         response = c.get('/results')
 

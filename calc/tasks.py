@@ -2,34 +2,33 @@ from __future__ import absolute_import, unicode_literals
 
 from celery import shared_task
 from calc.models import Rate
-# import datetime
 import urllib.request
 import json
 import ssl
 
 
 def get_rate(currency):
+    """ Updates exchange rates in Rate objects """
+    from_usd = f'USD_{currency}'
+    to_usd = f'{currency}_USD'
 
-    exch1 = f'USD_{currency}'
-    exch2 = f'{currency}_USD'
-
-    url1 = 'https://api.exchangeratesapi.io/latest?base=USD'
+    url = 'https://api.exchangeratesapi.io/latest?base=USD'
     context = ssl._create_unverified_context()
-    response1 = urllib.request.urlopen(url1, context=context)
-    str_rate1 = response1.read().decode()
-    jsrate1 = json.loads(str_rate1)
+    response = urllib.request.urlopen(url, context=context)
+    str_rates = response.read().decode()
+    jsrate = json.loads(str_rates)
 
-    rate1 = jsrate1['rates'][currency]
+    from_usd_rate = jsrate['rates'][currency]
+    to_usd_rate = 1 / from_usd_rate
 
-    rt1 = Rate.objects.get(name=exch1)
-    rt1.rate = rate1
-    rt1.save()
-
-    rate2 = 1 / rate1
-
-    rt2 = Rate.objects.get(name=exch2)
-    rt2.rate = rate2
-    rt2.save()
+    # Update rates in Rate objects
+    for exchange in (from_usd, to_usd):
+        rate = Rate.objects.get(name=exchange)
+        if exchange == from_usd:
+            rate.rate = from_usd_rate
+        else:   # exchange == to_usd
+            rate.rate = to_usd_rate
+        rate.save()
 
 
 @shared_task

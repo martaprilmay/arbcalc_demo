@@ -2,9 +2,9 @@ from calc.models import CostRu, Rate
 
 
 def rima_ru(amount, arbs, proc, type):
-
-    admin_fee = 0
-    arbs_fee = 0
+    """ Calculates fees for domestic arbitration in the Russian Arbitration
+        Center at the Russian Institute of Modern Arbitration
+    """
     comment0 = ''
 
     if type == 'Корпоративный':
@@ -159,10 +159,9 @@ def rima_ru(amount, arbs, proc, type):
 
 
 def rspp_ru(amount, arbs, proc, type):
-    '''
-    Calculates fees for international arbitration in the Arbitration Centre at
-    the Russian Union of Industrialists and Entrepreneurs.
-    '''
+    """ Calculates fees for domestic arbitration in the Arbitration Centre at
+        the Russian Union of Industrialists and Entrepreneurs
+    """
     comment0 = ''
     comment2 = ''
 
@@ -353,7 +352,10 @@ def rspp_ru(amount, arbs, proc, type):
 
 
 def icac_ru(amount, arbs, proc, type):
-
+    """ Calculates fees for domestic arbitration in the International
+        Commercial Arbitration Court at the Chamber of Commerce and Industry
+        of the Russian Federation
+    """
     comment0 = ''
 
     if type == 'Корпоративный':
@@ -467,45 +469,26 @@ def icac_ru(amount, arbs, proc, type):
 
 
 def ai_chooser_ru(req, ais, amount, arbs, proc, type):
-
+    """ Calls ai function for each Arbitral institution in UserRequestRu and
+        collects results in a list of CostRu objects
+    """
     result = []
-
     for ai in ais:
         if ai.id == 1:
             res = rima_ru(amount, arbs, proc, type)
-            obj = CostRu(ai=ai, req=req)
-            obj.reg_fee = res['reg_fee']
-            obj.arb_fee = res['arb_fee']
-            obj.arbs_fee = res['arbs_fee']
-            obj.admin_fee = res['admin_fee']
-            if 'comment0' in res:
-                obj.comment0 = res['comment0']
-            obj.comment1 = res['comment1']
-            obj.save()
-            result.append(obj)
-        if ai.id == 2:
+        elif ai.id == 2:
             res = rspp_ru(amount, arbs, proc, type)
-            obj = CostRu(ai=ai, req=req)
-            obj.reg_fee = res['reg_fee']
-            obj.arb_fee = res['arb_fee']
-            obj.arbs_fee = res['arbs_fee']
-            obj.admin_fee = res['admin_fee']
-            if 'comment0' in res:
-                obj.comment0 = res['comment0']
-            obj.comment1 = res['comment1']
-            if 'comment0' in res:
-                obj.comment2 = res['comment2']
-            obj.save()
-            result.append(obj)
-        if ai.id == 3:
+        elif ai.id == 3:
             res = icac_ru(amount, arbs, proc, type)
-            obj = CostRu(ai=ai, req=req)
-            obj.reg_fee = res['reg_fee']
-            obj.arb_fee = res['arb_fee']
-            obj.arbs_fee = res['arbs_fee']
-            obj.admin_fee = res['admin_fee']
-            if 'comment0' in res:
-                obj.comment0 = res['comment0']
-            obj.comment1 = res['comment1']
-            obj.save()
-            result.append(obj)
+        obj = CostRu(ai=ai, req=req)
+        obj.reg_fee = res['reg_fee']
+        obj.arb_fee = res['arb_fee']
+        obj.arbs_fee = res['arbs_fee']
+        obj.admin_fee = res['admin_fee']
+        if 'comment0' in res:
+            obj.comment0 = res['comment0']
+        obj.comment1 = res['comment1']
+        obj.save()
+        result.append(obj)
+
+    return result

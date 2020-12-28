@@ -18,10 +18,13 @@ from .tasks import get_rates
 
 
 def home(request):
-    '''Home page with Calculator UI'''
-
+    """ Eng version of Home page with Calculator UI (based on RequestForm).
+        If valid data is submitted via POST request UserRequest object is created,
+        UserRequest object id is stored in session, corresponding Cost objects
+        are created via ai_chooser function call, user is redirected to Results page.
+        Otherwise Home page refreshes and error messages are shown (if any)
+    """
     if request.method == 'POST':
-
         form = RequestForm(request.POST)
         if form.is_valid():
             req = form.save()
@@ -34,8 +37,7 @@ def home(request):
             ais = req.ai.all()
             ai_chooser(req, ais, amount, arbs, proc, parties, measures)
             return HttpResponseRedirect(reverse('calc:result'))
-
-        else:
+        else:   # Server-side validation fails
             context = {
                 'title': 'Arbitration Fee Calculator',
                 'form': form,
@@ -51,8 +53,13 @@ def home(request):
 
 
 def home_ru(request):
+    """ Ru version of Home page with Calculator UI (based on RequestFormRu).
+        If valid data is submitted via POST request UserRequestRu object is created,
+        UserRequestRu object id is stored in session, corresponding CostRu objects
+        are created via ai_chooser_ru function call, user is redirected to Results page.
+        Otherwise Home page refreshes and error messages are shown (if any)
+    """
     if request.method == 'POST':
-
         form = RequestFormRu(request.POST)
         if form.is_valid():
             req = form.save()
@@ -64,8 +71,7 @@ def home_ru(request):
             ais = req.ai.all()
             ai_chooser_ru(req, ais, amount, arbs, proc, type)
             return HttpResponseRedirect(reverse('calc:result-ru'))
-
-        else:
+        else:   # Server-side validation fails
             context = {
                 'title': 'Арбитражный калькулятор',
                 'form': form,
@@ -81,7 +87,11 @@ def home_ru(request):
 
 
 def result(request):
-    '''Results for user's request.'''
+    """ Eng version of the page with results for user's request (UserRequest object).
+        If session contains request id (last_id key) all results (Cost objects)
+        for corresponding request are displayed.
+        Otherwise user is redirected to Home page
+    """
     if 'last_id' in request.session:
         last_id = request.session['last_id']
         req = UserRequest.objects.get(pk=last_id)
@@ -101,12 +111,16 @@ def result(request):
             'measures': measures,
         }
         return render(request, 'calc/result.html', context)
-    else:
+    else:   # no 'last_id' in session
         return HttpResponseRedirect(reverse('calc:home'))
 
 
 def result_ru(request):
-    ''' Page with results for user's request'''
+    """ Ru version of the page with results for user's request (UserRequest object).
+        If session contains request id (last_id key) all results (Cost objects)
+        for corresponding request are displayed.
+        Otherwise user is redirected to Home page
+    """
     if 'last_id' in request.session:
         last_id = request.session['last_id']
         req = UserRequestRu.objects.get(pk=last_id)
@@ -124,27 +138,26 @@ def result_ru(request):
             'type': type,
         }
         return render(request, 'calc/result-ru.html', context)
-    else:
+    else:   # no 'last_id' in session
         return HttpResponseRedirect(reverse('calc:home-ru'))
 
 
 def about(request):
+    """ About page """
     context = {'title': 'Arbitration Fee Calculator - About'}
     return render(request, 'calc/about.html', context)
 
 
 def about_ru(request):
+    """ About page (Russian version) """
     context = {'title': 'О калькуляторе'}
     return render(request, 'calc/about-ru.html', context)
 
 
 def to_xlsx(request):
-
-    '''
-    Creates in memory stream an xlsx workbook with results and returns it in
-    HttpResponse object.
-    '''
-
+    """ Creates an xlsx workbook with results in buffer and returns it in
+        a HttpResponse object
+    """
     # get a request object and corresponding results
     if 'last_id' in request.session:
         last_id = request.session['last_id']
@@ -234,12 +247,9 @@ def to_xlsx(request):
 
 
 def to_xlsx_ru(request):
-
-    '''
-    Creates in memory stream an xlsx workbook with results and returns it in
-    HttpResponse object.
-    '''
-
+    """ Creates an xlsx workbook with results in buffer and returns it in
+        a HttpResponse object
+    """
     # get a request object and corresponding results
     if 'last_id' in request.session:
         last_id = request.session['last_id']
@@ -326,10 +336,9 @@ def to_xlsx_ru(request):
 
 
 def bar_chart(request):
-    '''
-    Creates in memory stream a PDF file with group bar chart of the results and
-    returns it in HttpResponse object.
-    '''
+    """ Creates a PDF file with group bar chart of the results in buffer and
+        returns it in a HttpResponse object
+    """
     # get a request object and corresponding results
     if 'last_id' in request.session:
         last_id = request.session['last_id']
@@ -337,7 +346,6 @@ def bar_chart(request):
         res = req.costs.all().order_by('arb_fee')
 
     # creating chart
-
     plt.style.use('fivethirtyeight')
     plt.rcParams.update({'font.size': 7})
 
@@ -402,10 +410,9 @@ def bar_chart(request):
 
 
 def bar_chart_ru(request):
-    '''
-    Creates in memory stream a PDF file with group bar chart of the results and
-    returns it in HttpResponse object.
-    '''
+    """ Creates a PDF file with group bar chart of the results in buffer and
+        returns it in a HttpResponse object
+    """
     # get a request object and corresponding results
     if 'last_id' in request.session:
         last_id = request.session['last_id']
@@ -413,7 +420,6 @@ def bar_chart_ru(request):
         res = req.costs.all().order_by('arb_fee')
 
     # creating chart
-
     plt.style.use('fivethirtyeight')
     plt.rcParams.update({'font.size': 7})
 

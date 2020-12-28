@@ -3,6 +3,7 @@ from django.core.validators import MinValueValidator
 
 
 class ArbInst(models.Model):
+    """ International Arbitral Institutions """
     arb_inst = models.CharField(max_length=64)
 
     def __str__(self):
@@ -10,6 +11,7 @@ class ArbInst(models.Model):
 
 
 class ArbInstRu(models.Model):
+    """ Russian Arbitral Institutions """
     arb_inst = models.CharField(max_length=64)
 
     def __str__(self):
@@ -17,16 +19,14 @@ class ArbInstRu(models.Model):
 
 
 class UserRequest(models.Model):
+    """ International arbitration - parameters of a dispute """
 
     ARBS = ((1, '1'), (3, '3'),)
-
     PARTIES = ((2, '2'), (3, '3'), (4, '4'),)
-
     PROC = (
         ('Standard', 'Standard'),
         ('Expedited', 'Expedited'),
     )
-
     EMERGENCY = (
         ('Yes', 'Yes'),
         ('No', 'No'),
@@ -44,6 +44,8 @@ class UserRequest(models.Model):
 
 
 class UserRequestRu(models.Model):
+    """ Russian domestic arbitration - parameters of a dispute """
+
     ARBS = ((1, '1'), (3, '3'),)
     TYPE_RU = (
         ('Внутренний', 'Внутренний'),
@@ -67,6 +69,11 @@ class UserRequestRu(models.Model):
 
 
 class Cost(models.Model):
+    """ Results (all fees and comments) calculated based upon dispute parameters
+        from a corresponding a UserRequest object. One Cost object per Arbitral
+        institution in UserRequest object. A queryset of Cost objects for a
+        UserRequest object can be accessed via related name 'costs'
+    """
 
     ai = models.ForeignKey(ArbInst, on_delete=models.CASCADE)
     req = models.ForeignKey(
@@ -82,8 +89,16 @@ class Cost(models.Model):
     comment1 = models.TextField(null=True, blank=True)
     comment2 = models.TextField(null=True, blank=True)
 
+    def __str__(self):
+        return f'Request N {self.req.id} ({self.req.amount}) - {self.ai.arb_inst}'
+
 
 class CostRu(models.Model):
+    """ Results (all fees and comments) calculated based upon dispute parameters
+        from a corresponding a UserRequestRu object. One CostRu object per Arbitral
+        institution in UserRequestRu object. A queryset of CostRu objects for a
+        UserRequestRu object can be accessed via related name 'costs'
+    """
     ai = models.ForeignKey(ArbInstRu, on_delete=models.CASCADE)
     req = models.ForeignKey(
         UserRequestRu, on_delete=models.CASCADE, related_name='costs')
@@ -97,9 +112,12 @@ class CostRu(models.Model):
     comment1 = models.TextField(null=True, blank=True)
     comment2 = models.TextField(null=True, blank=True)
 
+    def __str__(self):
+        return f'Request N {self.req.id} ({self.req.amount}) - {self.ai.arb_inst}'
+
 
 class Rate(models.Model):
-
+    """ Exchange rates """
     name = models.CharField(max_length=16)
     rate = models.FloatField(null=True, blank=True)
 
