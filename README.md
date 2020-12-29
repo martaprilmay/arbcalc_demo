@@ -2,9 +2,9 @@
 
 A Django web app which lets one calculate arbitration fee 
 (including arbitrators fee, administrative fee, registration 
-fee and emergency arbitrator's fee) based on such parameters of
-a dispute as amount in dispute, number of arbitrators, number 
-of parties and type of procedure.
+fee and emergency arbitrator's fee) based on parameters of
+a dispute such as its type, amount in dispute, number of 
+arbitrators, number of parties and type of procedure.
 
 Available at https://www.arbitrationfee.com
 
@@ -20,7 +20,7 @@ library.
 
 The PDF file is created in buffer and is available for
 download as user clicks on "Download PDF Chart" button
-on results page.
+on the results page.
 
 #### Auto-generated XLSX workbook with the results data
 The results can also be downloaded as an Excel Workbook. 
@@ -29,7 +29,7 @@ Python library.
 
 The XLSX file is created in buffer and is available for
 download as user clicks on "Download XLS Table" button
-on results page.
+on the results page.
 
 #### Currency exchange rates auto-updates
 While international arbitral institutions set their fees 
@@ -66,7 +66,8 @@ python manage.py migrate
  ```bash
 python manage.py runserver
 ```
-* Set up currency rate updates
+* Set up currency rates updates
+
     * Create Rate objects in admin panel or from shell
      ```bash
      python manage.py shell
