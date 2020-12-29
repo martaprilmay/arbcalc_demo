@@ -44,7 +44,7 @@ in background every hour using Celery beat (Redis as broker).
 To run app locally one should 
 * Clone the repository
 ```bash
-git clone
+git clone https://github.com/martaprilmay/arbcalc_demo.git
 ```
 * Install the dependencies (which are listed in 
 the 'requirements.txt' file) in the working environment
