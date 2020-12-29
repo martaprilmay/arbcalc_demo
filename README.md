@@ -31,8 +31,8 @@ The XLSX file is created in buffer and is available for
 download as user clicks on "Download XLS Table" button
 on results page.
 
-#### Currency rates auto-updates
-While International Arbitral Institutions set their fees 
+#### Currency exchange rates auto-updates
+While international arbitral institutions set their fees 
 in different currencies, all results are provided in USD 
 for convenience.
 To make correct exchange happen exchange rates are acquired 
