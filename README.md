@@ -6,28 +6,28 @@ fee and emergency arbitrator's fee) based on such parameters of
 a dispute as amount in dispute, number of arbitrators, number 
 of parties and type of procedure.
 
-Availiable at https://www.arbitrationfee.com
+Available at https://www.arbitrationfee.com
 
 ### Main features
 #### 15 algorithms to calculate fees
-* in 12 arbitral institutions (international arbitration)
-* in 3 arbitral institutions (domestic arbitration in Russia)
+* 12 arbitral institutions (international arbitration)
+* 3 arbitral institutions (domestic arbitration in Russia)
 
-#### Auto-Rendering PDF chart with the results data
+#### Auto-rendered PDF chart with the results data
 A pretty bar chart is automatically rendered as a PDF file 
 to visually present the results data using matplotlib Python 
 library. 
 
-The PDF file is created in buffer and is avaliable for
+The PDF file is created in buffer and is available for
 download as user clicks on "Download PDF Chart" button
 on results page.
 
-#### Auto-Creating XLSX workbook with the results data
+#### Auto-generated XLSX workbook with the results data
 The results can also be downloaded as an Excel Workbook. 
 The results data is collected to workbook using xlsxwriter 
 Python library.
 
-The XLSX file is created in buffer and is avaliable for
+The XLSX file is created in buffer and is available for
 download as user clicks on "Download XLS Table" button
 on results page.
 
@@ -35,7 +35,7 @@ on results page.
 While International Arbitral Institutions set their fees 
 in different currencies, all results are provided in USD 
 for convenience.
-To make correct exchange happen exchange rates are aquired 
+To make correct exchange happen exchange rates are acquired 
 *via* [Foreign exchange rates API](https://exchangeratesapi.io) 
 in background every hour using Celery beat (Redis as broker).
 
