@@ -150,28 +150,11 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Heroku Redis settings
 
-REDIS_HOST = 'ec2-54-147-218-112.compute-1.amazonaws.com'
-REDIS_PORT = '25819'
+REDIS_HOST = os.environ.get('REDIS_HOST')
+REDIS_PORT = os.environ.get('REDIS_PORT')
 CELERY_BROKER_URL = os.environ.get('REDIS_URL')
 CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
 CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL')
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-
-# Local Redis settings
-
-# REDIS_HOST = '0.0.0.0'
-# REDIS_PORT = '6379'
-# CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
-# CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
-# CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
-# CELERY_ACCEPT_CONTENT = ['application/json']
-# CELERY_TASK_SERIALIZER = 'json'
-# CELERY_RESULT_SERIALIZER = 'json'
-
-# Djano-crontab ralated settings
-# every hour
-CRONJOBS = [
-    ('0 * * * *', 'calc.cron.my_scheduled_job')
-]
